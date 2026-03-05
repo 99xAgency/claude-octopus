@@ -10,10 +10,12 @@ ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 # Auto-sync marketplace.json with actual counts
 if [[ -x "$ROOT_DIR/scripts/sync-marketplace.sh" ]]; then
     "$ROOT_DIR/scripts/sync-marketplace.sh"
-    # Stage any marketplace changes so they're included in the push
+    # Abort push if marketplace.json is out of sync — user must commit the update
     if ! git -C "$ROOT_DIR" diff --quiet .claude-plugin/marketplace.json 2>/dev/null; then
         git -C "$ROOT_DIR" add .claude-plugin/marketplace.json
-        git -C "$ROOT_DIR" commit --quiet --amend --no-edit
+        echo "ERROR: marketplace.json was updated with correct counts."
+        echo "Please commit the staged change and push again."
+        exit 1
     fi
 fi
 

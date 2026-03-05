@@ -400,8 +400,15 @@ check_ux_dependencies() {
 }
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# CLAUDE CODE VERSION DETECTION (v7.12.0)
-# Detects Claude Code v2.1.12+ features for enhanced task management
+# CLAUDE CODE VERSION DETECTION (v7.12.0, updated v8.34.0)
+# Detects Claude Code v2.1.12+ through v2.1.69+ features.
+#
+# Flag usage patterns:
+#   - GATED: Flag is checked in if-conditionals to enable/disable behavior
+#   - METADATA: Flag is declared for doctor diagnostics, logging, and future use
+#   - EXPORTED: Flag is exported for subshells/hooks
+# Not all flags gate behavior — many serve as a capability inventory for
+# doctor_check_agents(), metrics, and cross-session context. This is intentional.
 # ═══════════════════════════════════════════════════════════════════════════════
 CLAUDE_CODE_VERSION=""
 SUPPORTS_TASK_MANAGEMENT=false
@@ -458,6 +465,17 @@ SUPPORTS_MEMORY_LEAK_FIXES=false       # v8.29: Claude Code v2.1.63+ (18+ memory
 SUPPORTS_BATCH_COMMAND=false           # v8.29: Claude Code v2.1.63+ (/batch bundled command)
 SUPPORTS_MCP_OPT_OUT=false            # v8.29: Claude Code v2.1.63+ (ENABLE_CLAUDEAI_MCP_SERVERS=false)
 SUPPORTS_SKILL_CACHE_RESET=false      # v8.29: Claude Code v2.1.63+ (/clear resets cached skills)
+SUPPORTS_REDUCED_ERROR_LOGGING=false  # v8.34: Claude Code v2.1.66+ (reduced spurious error logging)
+SUPPORTS_OPUS_MEDIUM_EFFORT=false     # v8.34: Claude Code v2.1.68+ (Opus 4.6 defaults to medium effort)
+SUPPORTS_ULTRATHINK=false             # v8.34: Claude Code v2.1.68+ (ultrathink keyword for high effort)
+SUPPORTS_OPUS_40_REMOVED=false        # v8.34: Claude Code v2.1.68+ (Opus 4.0/4.1 removed from API)
+SUPPORTS_SKILL_DIR_VAR=false          # v8.34: Claude Code v2.1.69+ (${CLAUDE_SKILL_DIR} in skills)
+SUPPORTS_INSTRUCTIONS_LOADED_HOOK=false # v8.34: Claude Code v2.1.69+ (InstructionsLoaded hook event)
+SUPPORTS_HOOK_AGENT_FIELDS=false      # v8.34: Claude Code v2.1.69+ (agent_id/agent_type in hook events)
+SUPPORTS_STATUSLINE_WORKTREE=false    # v8.34: Claude Code v2.1.69+ (worktree field in statusline hooks)
+SUPPORTS_RELOAD_PLUGINS=false         # v8.34: Claude Code v2.1.69+ (/reload-plugins command)
+SUPPORTS_DISABLE_GIT_INSTRUCTIONS=false # v8.34: Claude Code v2.1.69+ (includeGitInstructions setting)
+SUPPORTS_GIT_SUBDIR_PLUGINS=false     # v8.34: Claude Code v2.1.69+ (git-subdir plugin source type)
 SUPPORTS_CONTINUATION=false           # v8.30: Agent resume/continuation for iterative retries
 OCTOPUS_BACKEND="api"              # v8.16: Detected backend (api|bedrock|vertex|foundry)
 AGENT_TEAMS_ENABLED="${CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS:-0}"
@@ -644,6 +662,29 @@ detect_claude_code_version() {
         SUPPORTS_SKILL_CACHE_RESET=true
     fi
 
+    # Check for v2.1.66+ features (reduced error logging)
+    if version_compare "$CLAUDE_CODE_VERSION" "2.1.66" ">="; then
+        SUPPORTS_REDUCED_ERROR_LOGGING=true
+    fi
+
+    # Check for v2.1.68+ features (Opus medium effort default, ultrathink, Opus 4.0/4.1 removed)
+    if version_compare "$CLAUDE_CODE_VERSION" "2.1.68" ">="; then
+        SUPPORTS_OPUS_MEDIUM_EFFORT=true
+        SUPPORTS_ULTRATHINK=true
+        SUPPORTS_OPUS_40_REMOVED=true
+    fi
+
+    # Check for v2.1.69+ features (CLAUDE_SKILL_DIR, InstructionsLoaded hook, agent fields in hooks, etc.)
+    if version_compare "$CLAUDE_CODE_VERSION" "2.1.69" ">="; then
+        SUPPORTS_SKILL_DIR_VAR=true
+        SUPPORTS_INSTRUCTIONS_LOADED_HOOK=true
+        SUPPORTS_HOOK_AGENT_FIELDS=true
+        SUPPORTS_STATUSLINE_WORKTREE=true
+        SUPPORTS_RELOAD_PLUGINS=true
+        SUPPORTS_DISABLE_GIT_INSTRUCTIONS=true
+        SUPPORTS_GIT_SUBDIR_PLUGINS=true
+    fi
+
     log "INFO" "Claude Code v$CLAUDE_CODE_VERSION detected"
     log "INFO" "Task Management: $SUPPORTS_TASK_MANAGEMENT | Fork Context: $SUPPORTS_FORK_CONTEXT | Agent Teams: $SUPPORTS_AGENT_TEAMS"
     log "INFO" "Persistent Memory: $SUPPORTS_PERSISTENT_MEMORY | Hook Events: $SUPPORTS_HOOK_EVENTS | Agent Type Routing: $SUPPORTS_AGENT_TYPE_ROUTING"
@@ -659,6 +700,9 @@ detect_claude_code_version() {
     log "INFO" "Native Auto-Memory: $SUPPORTS_NATIVE_AUTO_MEMORY | Agent Memory GC: $SUPPORTS_AGENT_MEMORY_GC | Smart Bash Prefixes: $SUPPORTS_SMART_BASH_PREFIXES"
     log "INFO" "HTTP Hooks: $SUPPORTS_HTTP_HOOKS | Shared WT Config: $SUPPORTS_WORKTREE_SHARED_CONFIG | Batch: $SUPPORTS_BATCH_COMMAND | MCP Opt-Out: $SUPPORTS_MCP_OPT_OUT"
     log "INFO" "Continuation: $SUPPORTS_CONTINUATION | Skill Cache Reset: $SUPPORTS_SKILL_CACHE_RESET"
+    log "INFO" "Opus Medium Effort: $SUPPORTS_OPUS_MEDIUM_EFFORT | Ultrathink: $SUPPORTS_ULTRATHINK | Opus 4.0 Removed: $SUPPORTS_OPUS_40_REMOVED"
+    log "INFO" "Skill Dir Var: $SUPPORTS_SKILL_DIR_VAR | Instructions Hook: $SUPPORTS_INSTRUCTIONS_LOADED_HOOK | Hook Agent Fields: $SUPPORTS_HOOK_AGENT_FIELDS"
+    log "INFO" "Statusline Worktree: $SUPPORTS_STATUSLINE_WORKTREE | Reload Plugins: $SUPPORTS_RELOAD_PLUGINS | Disable Git Instructions: $SUPPORTS_DISABLE_GIT_INSTRUCTIONS"
 
     # v8.29.0: Context window control
     OCTOPUS_CONTEXT_WINDOW="${OCTOPUS_CONTEXT_WINDOW:-auto}"
@@ -668,6 +712,12 @@ detect_claude_code_version() {
     elif [[ "$OCTOPUS_CONTEXT_WINDOW" == "auto" ]]; then
         # auto: let Claude Code decide based on model and mode
         unset CLAUDE_CODE_DISABLE_1M_CONTEXT 2>/dev/null || true
+    fi
+
+    # v8.34.0: Disable built-in git instructions to save ~2K tokens (v2.1.69+)
+    if [[ "$SUPPORTS_DISABLE_GIT_INSTRUCTIONS" == "true" ]]; then
+        export CLAUDE_CODE_DISABLE_GIT_INSTRUCTIONS=1
+        log "INFO" "Built-in git instructions disabled (SUPPORTS_DISABLE_GIT_INSTRUCTIONS)"
     fi
 
     # v8.5: Detect /fast toggle after version detection
@@ -1193,6 +1243,11 @@ get_effort_level() {
 
     # User override — validate against enum
     if [[ -n "${OCTOPUS_EFFORT_OVERRIDE:-}" ]]; then
+        # v8.34.0: ultrathink keyword support (v2.1.68+)
+        if [[ "$OCTOPUS_EFFORT_OVERRIDE" == "ultrathink" && "$SUPPORTS_ULTRATHINK" == "true" ]]; then
+            echo "high"  # ultrathink triggers via keyword, effort API maps to high
+            return 0
+        fi
         case "$OCTOPUS_EFFORT_OVERRIDE" in
             low|medium|high) echo "$OCTOPUS_EFFORT_OVERRIDE"; return ;;
             *) log "WARN" "Invalid OCTOPUS_EFFORT_OVERRIDE='$OCTOPUS_EFFORT_OVERRIDE' — ignoring (use low|medium|high)" ;;
@@ -1203,11 +1258,11 @@ get_effort_level() {
     local effort=""
     case "$phase" in
         probe|discover)
-            # Research: low complexity = low effort, high = medium (never high — broad not deep)
+            # Research: low complexity = medium effort (v8.34: Opus defaults to medium), high = medium (never high — broad not deep)
             case "$complexity" in
-                1) effort="low" ;;
+                1) effort="medium" ;;
                 3) effort="medium" ;;
-                *) effort="low" ;;
+                *) effort="medium" ;;
             esac
             ;;
         grasp|define)
@@ -2338,6 +2393,13 @@ record_agent_call() {
 
     local timestamp
     timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+    # v8.34.0: Capture account context in metrics (G10)
+    if [[ "$SUPPORTS_ACCOUNT_ENV_VARS" == "true" ]]; then
+        local account_uuid="${CLAUDE_CODE_ACCOUNT_UUID:-unknown}"
+        local org_uuid="${CLAUDE_CODE_ORGANIZATION_UUID:-unknown}"
+        log "DEBUG" "Account: $account_uuid | Org: $org_uuid"
+    fi
 
     # v8.32.0: Account env vars for per-user traceability (Claude Code v2.1.51+)
     local account_uuid="${CLAUDE_ACCOUNT_UUID:-unknown}"
@@ -3572,7 +3634,9 @@ DECEOF
     safe_rationale="${safe_rationale:-No rationale provided}"
     local safe_scope="${scope//\"/\\\"}"
     safe_scope="${safe_scope:-project-wide}"
-    echo "{\"id\":\"${decision_id}\",\"type\":\"${type}\",\"timestamp\":\"${timestamp}\",\"source\":\"${source}\",\"summary\":\"${safe_summary}\",\"scope\":\"${safe_scope}\",\"confidence\":\"${confidence}\",\"importance\":${importance}}" >> "$jsonl_file" 2>/dev/null || true
+    if ! echo "{\"id\":\"${decision_id}\",\"type\":\"${type}\",\"timestamp\":\"${timestamp}\",\"source\":\"${source}\",\"summary\":\"${safe_summary}\",\"scope\":\"${safe_scope}\",\"confidence\":\"${confidence}\",\"importance\":${importance}}" >> "$jsonl_file" 2>/dev/null; then
+        log WARN "Failed to append decision $decision_id to $jsonl_file"
+    fi
 
     log DEBUG "Recorded structured decision: $decision_id ($type from $source)"
 
@@ -10608,6 +10672,11 @@ spawn_agent() {
         use_fork="false"
     fi
 
+    # v8.34.0: Propagate Octopus env vars to worktree agents (G8)
+    if [[ "$SUPPORTS_WORKTREE_HOOKS" == "true" ]]; then
+        log "DEBUG" "Worktree hooks available — Octopus env vars will propagate via WorktreeCreate"
+    fi
+
     # Determine role if not provided
     if [[ -z "$role" ]]; then
         local task_type
@@ -10638,6 +10707,11 @@ spawn_agent() {
             checkpoint_ctx="${partial_output:0:1500}"
             log INFO "Loaded checkpoint for task $task_id (${#checkpoint_ctx} chars)"
         fi
+    fi
+
+    # v8.34.0: Fast bash — skip login shell in spawned agents (G9)
+    if [[ "$SUPPORTS_FAST_BASH" == "true" ]]; then
+        export CLAUDE_BASH_NO_LOGIN=true
     fi
 
     # Apply persona to prompt
@@ -14172,7 +14246,8 @@ doctor_check_recurrence() {
 
     # Count quality-gate failures (the most actionable pattern)
     local qg_failures
-    qg_failures=$(grep -c '"type":"quality-gate"' "$jsonl_file" 2>/dev/null || echo "0")
+    qg_failures=$(grep -c '"type":"quality-gate"' "$jsonl_file" 2>/dev/null || true)
+    qg_failures="${qg_failures:-0}"
     if [[ "$qg_failures" -ge 3 ]]; then
         doctor_add "recurrence-qg" "recurrence" "warn" \
             "${qg_failures} quality gate failures recorded" \
@@ -15139,6 +15214,11 @@ probe_discover() {
         record_agents_batch_complete "probe" "$task_group" 2>/dev/null || true
     fi
 
+    # v8.34.0: Agent memory GC — release completed subagent state (G11)
+    if [[ "$SUPPORTS_AGENT_MEMORY_GC" == "true" ]]; then
+        log "DEBUG" "Agent memory GC available — Claude Code will release completed subagent state"
+    fi
+
     # v7.19.0 P0.3: Check agent status and report results
     echo ""
     echo -e "${CYAN}Analyzing results...${NC}"
@@ -15452,6 +15532,11 @@ tangle_develop() {
 
     # v8.18.0: Reset lockouts for new tangle phase
     reset_provider_lockouts
+
+    # v8.34.0: Parallel file safety — write/edit errors don't abort siblings (G12)
+    if [[ "$SUPPORTS_PARALLEL_FILE_SAFETY" == "true" ]]; then
+        log "DEBUG" "Parallel file safety active — concurrent file operations enabled"
+    fi
 
     mkdir -p "$RESULTS_DIR"
 

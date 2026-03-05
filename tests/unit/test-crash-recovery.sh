@@ -204,7 +204,7 @@ test_checkpoint_in_spawn_agent_failure() {
 test_checkpoint_in_spawn_agent_start() {
     test_case "Checkpoint loaded in spawn_agent start"
 
-    if grep -A 50 "spawn_agent()" "$PROJECT_ROOT/scripts/orchestrate.sh" | grep -q "load_agent_checkpoint"; then
+    if grep -A 70 "spawn_agent()" "$PROJECT_ROOT/scripts/orchestrate.sh" | grep -q "load_agent_checkpoint"; then
         test_pass
     else
         test_fail "Checkpoint not loaded at spawn_agent start"

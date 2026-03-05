@@ -24,12 +24,19 @@ VERSION=$(grep '"version"' "$ROOT_DIR/.claude-plugin/plugin.json" | head -1 | se
 
 # Read current marketplace description
 CURRENT_DESC=$(python3 -c "
-import json
+import json, sys
 m = json.load(open('$ROOT_DIR/.claude-plugin/marketplace.json'))
 for p in m.get('plugins', []):
     if p.get('name') == 'claude-octopus':
-        print(p.get('description', ''))
+        desc = p.get('description', '')
+        if not desc:
+            print('ERROR: claude-octopus description is empty', file=sys.stderr)
+            sys.exit(1)
+        print(desc)
         break
+else:
+    print('ERROR: claude-octopus plugin entry not found', file=sys.stderr)
+    sys.exit(1)
 ")
 
 # Extract the feature summary (first part before counts)

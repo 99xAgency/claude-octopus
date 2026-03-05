@@ -191,21 +191,21 @@ echo -e "${BLUE}Test Group 3: spawn_agent Skills Injection${NC}"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 # 3.1: spawn_agent references build_skill_context
-if grep -A 100 '^spawn_agent()' "$ORCHESTRATE_SH" | grep -q 'build_skill_context'; then
+if grep -A 130 '^spawn_agent()' "$ORCHESTRATE_SH" | grep -q 'build_skill_context'; then
     assert_pass "3.1 spawn_agent references build_skill_context"
 else
     assert_fail "3.1 spawn_agent references build_skill_context"
 fi
 
 # 3.2: spawn_agent references select_curated_agent for skill lookup
-if grep -A 100 '^spawn_agent()' "$ORCHESTRATE_SH" | grep -q 'select_curated_agent.*prompt.*phase'; then
+if grep -A 150 '^spawn_agent()' "$ORCHESTRATE_SH" | grep -q 'select_curated_agent.*prompt.*phase'; then
     assert_pass "3.2 spawn_agent references select_curated_agent for skill lookup"
 else
     assert_fail "3.2 spawn_agent references select_curated_agent for skill lookup"
 fi
 
 # 3.3: Skills injection gated behind SUPPORTS_AGENT_TYPE_ROUTING
-if grep -A 100 '^spawn_agent()' "$ORCHESTRATE_SH" | grep -q 'SUPPORTS_AGENT_TYPE_ROUTING.*true'; then
+if grep -A 150 '^spawn_agent()' "$ORCHESTRATE_SH" | grep -q 'SUPPORTS_AGENT_TYPE_ROUTING.*true'; then
     assert_pass "3.3 Skills injection gated behind SUPPORTS_AGENT_TYPE_ROUTING"
 else
     assert_fail "3.3 Skills injection gated behind SUPPORTS_AGENT_TYPE_ROUTING"

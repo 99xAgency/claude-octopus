@@ -63,7 +63,7 @@ Show all open issues in table format:
 ```
 
 **Pattern Detection:** After listing, check if 3+ open issues share the same category. If so, alert:
-```
+```text
 ⚠ Pattern detected: 3 open issues in category "integration" — may indicate a systemic problem.
 ```
 
@@ -130,7 +130,7 @@ else
 fi
 ```
 
-#### Step 4: Generate Issue ID
+#### Step 3: Generate Issue ID
 
 **Format:** `ISS-YYYYMMDD-NNN`
 

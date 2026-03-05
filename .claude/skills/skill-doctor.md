@@ -66,6 +66,7 @@ cd "${CLAUDE_PLUGIN_ROOT}" && bash scripts/orchestrate.sh doctor scheduler
 cd "${CLAUDE_PLUGIN_ROOT}" && bash scripts/orchestrate.sh doctor skills
 cd "${CLAUDE_PLUGIN_ROOT}" && bash scripts/orchestrate.sh doctor conflicts
 cd "${CLAUDE_PLUGIN_ROOT}" && bash scripts/orchestrate.sh doctor agents
+cd "${CLAUDE_PLUGIN_ROOT}" && bash scripts/orchestrate.sh doctor recurrence
 ```
 
 ### Step 3: Verbose or JSON Output

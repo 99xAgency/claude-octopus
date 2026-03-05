@@ -251,7 +251,7 @@ CMD_FILE="$PLUGIN_ROOT/.claude/commands/design-ui-ux.md"
 if [ -f "$CMD_FILE" ]; then
     pass "design-ui-ux command file exists"
 else
-    warn "design-ui-ux command file not found"
+    fail "design-ui-ux command file not found"
 fi
 
 # Check routing.sh has ui-ux-designer pattern
