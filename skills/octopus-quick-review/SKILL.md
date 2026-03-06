@@ -1,7 +1,7 @@
 ---
 name: octopus-quick-review
 version: 1.0.0
-description: Fast pre-commit code review using multi-AI consensus. Use when: Use this skill when the user says "review this code", "check this PR",;"quality check the implementation", "review my changes", or "what's wrong with this code".
+description: Fast pre-commit code review using multi-AI consensus. Use when: Use this skill when the user says "review this code", "check this PR",. "quality check the implementation", "review my changes", or "what's wrong with this code".
 ---
 
 # Quick Review Skill

@@ -1,7 +1,7 @@
 ---
 name: skill-thought-partner
 version: 1.0.0
-description: Creative brainstorming with Pattern Spotting and Paradox Hunting. Use when: Use PROACTIVELY when user wants to:;"brainstorm", "think through this with me" "help me explore ideas", "creative session"
+description: Creative brainstorming with Pattern Spotting and Paradox Hunting. Use when: Use PROACTIVELY when user wants to:. "brainstorm", "think through this with me". "help me explore ideas", "creative session"
 ---
 
 # Thought Partner Skill

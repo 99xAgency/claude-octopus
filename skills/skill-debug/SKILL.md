@@ -1,7 +1,7 @@
 ---
 name: skill-debug
 version: 1.0.0
-description: Systematic debugging workflow. Use when: AUTOMATICALLY ACTIVATE when encountering bugs or failures:;"fix this bug" or "debug Y" or "troubleshoot X" "why is X failing" or "why isn't X working" or "why doesn't X work"
+description: Systematic debugging workflow. Use when: AUTOMATICALLY ACTIVATE when encountering bugs or failures:. "fix this bug" or "debug Y" or "troubleshoot X". "why is X failing" or "why isn't X working" or "why doesn't X work"
 ---
 
 # Systematic Debugging

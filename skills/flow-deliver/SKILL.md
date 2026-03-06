@@ -1,7 +1,7 @@
 ---
 name: flow-deliver
 version: 1.0.0
-description: Multi-AI validation and review using Codex and Gemini CLIs (Double Diamond Deliver phase). Use when: AUTOMATICALLY ACTIVATE when user requests validation or review:;"review X" or "validate Y" or "test Z" "check if X works correctly"
+description: Multi-AI validation and review using Codex and Gemini CLIs (Double Diamond Deliver phase). Use when: AUTOMATICALLY ACTIVATE when user requests validation or review:. "review X" or "validate Y" or "test Z". "check if X works correctly"
 ---
 
 ## Pre-Delivery: State Check

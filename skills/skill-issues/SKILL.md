@@ -1,7 +1,7 @@
 ---
 name: skill-issues
 version: 1.0.0
-description: Track and manage project issues across sessions. Use when: AUTOMATICALLY ACTIVATE when user mentions:;"issue" or "issues" or "problem" "track this" or "remember this blocker"
+description: Track and manage project issues across sessions. Use when: AUTOMATICALLY ACTIVATE when user mentions:. "issue" or "issues" or "problem". "track this" or "remember this blocker"
 ---
 
 # Issue Tracking

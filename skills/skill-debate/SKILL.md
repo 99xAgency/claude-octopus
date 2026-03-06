@@ -1,7 +1,7 @@
 ---
 name: skill-debate
 version: 1.0.0
-description: Structured three-way AI debates between Claude, Gemini, and Codex. Use when: AUTOMATICALLY ACTIVATE when user says:;"/debate <question>" "run a debate about X"
+description: Structured three-way AI debates between Claude, Gemini, and Codex. Use when: AUTOMATICALLY ACTIVATE when user says:. "/debate <question>". "run a debate about X"
 ---
 
 # AI Debate Hub Skill v4.7

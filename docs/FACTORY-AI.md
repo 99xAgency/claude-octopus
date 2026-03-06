@@ -50,6 +50,7 @@ Add to your `.factory/settings.json` for team-wide deployment:
 | Feature | Status | Notes |
 |---------|--------|-------|
 | 44 skills (auto-discovered) | Works | Generated `skills/<name>/SKILL.md` directories |
+| 49 slash commands | Works | Copied to `commands/` at plugin root |
 | 32 expert personas | Works | Persona routing via `agents/config.yaml` |
 | Multi-provider orchestration | Works | Codex + Gemini + host model |
 | Double Diamond workflow | Works | Discover, Define, Develop, Deliver |
@@ -61,8 +62,8 @@ Add to your `.factory/settings.json` for team-wide deployment:
 
 | Feature | Notes |
 |---------|-------|
-| 49 slash commands (`/octo:*`) | Factory has no commands concept — skills only |
 | 6 human-only skills | Excluded from Factory (require interactive Claude Code features) |
+| Command namespacing (`/octo:*`) | Factory commands use filename as-is (`/setup`, `/define`), not prefixed with `octo:` |
 
 ## Differences from Claude Code
 
@@ -72,7 +73,7 @@ Add to your `.factory/settings.json` for team-wide deployment:
 | Manifest location | `.claude-plugin/plugin.json` | `.factory-plugin/plugin.json` |
 | Skill format | `.claude/skills/<name>.md` (flat) | `skills/<name>/SKILL.md` (directory per skill) |
 | Skill frontmatter | Extended (agent, context, trigger, etc.) | Simple (name, version, description) |
-| Commands | `.claude/commands/<name>.md` | No equivalent — skills only |
+| Commands | `.claude/commands/<name>.md` | `commands/<name>.md` (no plugin prefix) |
 | Subagents | "agents" | "droids" |
 | Version detection | `claude --version` | `droid --version` |
 | Model selection | Claude models + external | Any model (OpenAI, Anthropic, Google, xAI, local) |
@@ -100,18 +101,22 @@ The build script:
 4. Merges `trigger` content into `description` (Factory uses description for skill selection)
 5. Skips skills marked `invocation: human_only`
 6. Writes `skills/<skill-name>/SKILL.md`
+7. Copies `.claude/commands/*.md` to `commands/` for Factory command discovery
 
-The generated `skills/` directory is **committed to git** (not gitignored), so Factory discovers skills immediately on install without a build step.
+The generated `skills/` and `commands/` directories are **committed to git** (not gitignored), so Factory discovers everything immediately on install without a build step.
 
-### Regenerating After Skill Changes
+> **Note:** On Claude Code, commands are namespaced as `/octo:<name>` (e.g., `/octo:setup`).
+> On Factory, they appear as `/<name>` (e.g., `/setup`) since Factory uses the filename directly.
 
-When you add, modify, or remove skills in `.claude/skills/`, regenerate the Factory skills:
+### Regenerating After Skill or Command Changes
+
+When you add, modify, or remove skills in `.claude/skills/` or commands in `.claude/commands/`, regenerate:
 
 ```bash
 bash scripts/build-factory-skills.sh
 ```
 
-Then commit the updated `skills/` directory.
+Then commit the updated `skills/` and `commands/` directories.
 
 ## Setup
 

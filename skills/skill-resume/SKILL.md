@@ -1,7 +1,7 @@
 ---
 name: skill-resume
 version: 1.0.0
-description: Restore context from previous session and continue workflow. Use when: AUTOMATICALLY ACTIVATE when user mentions:;"resume" or "continue" or "pick up where I left off" "what was I doing" or "restore session"
+description: Restore context from previous session and continue workflow. Use when: AUTOMATICALLY ACTIVATE when user mentions:. "resume" or "continue" or "pick up where I left off". "what was I doing" or "restore session"
 ---
 
 # Session Restoration

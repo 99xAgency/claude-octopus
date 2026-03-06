@@ -1,7 +1,7 @@
 ---
 name: flow-discover
 version: 1.0.0
-description: Multi-AI research using Codex and Gemini CLIs (Double Diamond Discover phase). Use when: AUTOMATICALLY ACTIVATE when user requests research or exploration:;"research X" or "explore Y" or "investigate Z" "what are the options for X" or "what are my choices for Y"
+description: Multi-AI research using Codex and Gemini CLIs (Double Diamond Discover phase). Use when: AUTOMATICALLY ACTIVATE when user requests research or exploration:. "research X" or "explore Y" or "investigate Z". "what are the options for X" or "what are my choices for Y"
 ---
 
 ## Pre-Discovery: Project Initialization

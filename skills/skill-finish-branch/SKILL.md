@@ -1,7 +1,7 @@
 ---
 name: skill-finish-branch
 version: 1.0.0
-description: Post-implementation: verify tests, merge/PR/keep/discard. Use when: AUTOMATICALLY ACTIVATE when user requests task completion with git operations:;"commit and push" or "git commit and push" "complete all tasks and commit and push"
+description: Post-implementation: verify tests, merge/PR/keep/discard. Use when: AUTOMATICALLY ACTIVATE when user requests task completion with git operations:. "commit and push" or "git commit and push". "complete all tasks and commit and push"
 ---
 
 # Finishing a Development Branch

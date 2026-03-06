@@ -1,7 +1,7 @@
 ---
 name: skill-iterative-loop
 version: 1.0.0
-description: Execute tasks in loops with conditions until goals are met. Use when: AUTOMATICALLY ACTIVATE when user requests iterative execution:;"loop X times" or "loop around N times" "loop around 5 times auditing, enhancing, testing"
+description: Execute tasks in loops with conditions until goals are met. Use when: AUTOMATICALLY ACTIVATE when user requests iterative execution:. "loop X times" or "loop around N times". "loop around 5 times auditing, enhancing, testing"
 ---
 
 # Iterative Loop Execution

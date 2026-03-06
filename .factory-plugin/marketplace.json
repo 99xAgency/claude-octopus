@@ -1,0 +1,35 @@
+{
+  "name": "nyldn-plugins",
+  "owner": {
+    "name": "nyldn"
+  },
+  "metadata": {
+    "description": "Multi-tentacled orchestration plugin for Factory AI Droid",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "claude-octopus",
+      "source": "./",
+      "description": "v8.38.1 - Multi-AI orchestration with Double Diamond workflow. 32 personas, 49 commands, 44 skills. Run /setup after install.",
+      "version": "8.38.1",
+      "author": {
+        "name": "nyldn"
+      },
+      "repository": "https://github.com/nyldn/claude-octopus",
+      "license": "MIT",
+      "keywords": [
+        "factory-ai",
+        "droid",
+        "multi-agent",
+        "orchestration",
+        "double-diamond",
+        "codex",
+        "gemini",
+        "multi-provider",
+        "provider-routing"
+      ],
+      "category": "orchestration"
+    }
+  ]
+}

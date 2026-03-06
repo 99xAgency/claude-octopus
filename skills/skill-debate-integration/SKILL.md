@@ -1,7 +1,7 @@
 ---
 name: skill-debate-integration
 version: 1.0.0
-description: Internal: quality gates and export for AI debates. Use when: AUTOMATICALLY ACTIVATE when:;User runs /debate command AI Debate Hub (.dependencies/claude-skills/skills/debate.md) is present
+description: Internal: quality gates and export for AI debates. Use when: AUTOMATICALLY ACTIVATE when:. User runs /debate command. AI Debate Hub (.dependencies/claude-skills/skills/debate.md) is present
 ---
 
 # AI Debate Hub Integration Layer

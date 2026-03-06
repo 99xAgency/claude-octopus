@@ -1,7 +1,7 @@
 ---
 name: skill-resume-enhanced
 version: 1.0.0
-description: Enhanced session resumption resilient to context clearing. Use when: AUTOMATICALLY ACTIVATE when:;User says "resume", "continue", "pick up where we left off" User asks "what was I working on", "where did we leave off"
+description: Enhanced session resumption resilient to context clearing. Use when: AUTOMATICALLY ACTIVATE when:. User says "resume", "continue", "pick up where we left off". User asks "what was I working on", "where did we leave off"
 ---
 
 # Enhanced Session Resume (v7.25.0+)

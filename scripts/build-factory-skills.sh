@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # build-factory-skills.sh — Generate Factory AI-compatible skills/<name>/SKILL.md
-# from .claude/skills/*.md source files.
+# and commands/<name>.md from .claude/skills/*.md and .claude/commands/*.md.
 #
 # Factory format: skills/<skill-name>/SKILL.md with frontmatter: name, version, description
+# Factory format: commands/<name>.md with frontmatter: description
 # Our format: .claude/skills/<skill-name>.md with extended frontmatter
 #
 # Usage: bash scripts/build-factory-skills.sh [--clean]
@@ -13,18 +14,21 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PLUGIN_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 SKILLS_SRC="$PLUGIN_ROOT/.claude/skills"
 SKILLS_OUT="$PLUGIN_ROOT/skills"
+COMMANDS_SRC="$PLUGIN_ROOT/.claude/commands"
+COMMANDS_OUT="$PLUGIN_ROOT/commands"
 
 # Octopus-only frontmatter keys to strip (Factory doesn't understand these)
 STRIP_KEYS="agent|aliases|category|context|cost_optimization|created|execution_mode|invocation|pattern|pre_execution_contract|providers|tags|task_dependencies|task_management|trigger|updated|use_native_tasks|validation_gates|version"
 
 if [[ "${1:-}" == "--clean" ]]; then
-  echo "Cleaning generated skills directory..."
-  rm -rf "$SKILLS_OUT"
+  echo "Cleaning generated skills and commands directories..."
+  rm -rf "$SKILLS_OUT" "$COMMANDS_OUT"
   echo "Done."
   exit 0
 fi
 
-# Clean and recreate output directory
+# --- Skills generation ---
+
 rm -rf "$SKILLS_OUT"
 mkdir -p "$SKILLS_OUT"
 
@@ -65,8 +69,8 @@ for src in "$SKILLS_SRC"/*.md; do
   # Factory uses description as the selection signal, so merge trigger hints
   factory_desc="$description"
   if [[ -n "$trigger" ]]; then
-    # Take meaningful trigger lines (skip blanks and "DO NOT" lines)
-    trigger_hints="$(echo "$trigger" | grep -v "^$" | grep -vi "DO NOT" | head -3 | sed 's/^- //' | paste -sd '; ' -)"
+    # Take meaningful trigger lines (skip blanks, "DO NOT" lines, and YAML delimiters)
+    trigger_hints="$(echo "$trigger" | grep -v "^$" | grep -vi "DO NOT" | grep -v "^---$" | head -3 | sed 's/^- //' | awk 'NR>1{printf ". "}{printf "%s",$0}')"
     if [[ -n "$trigger_hints" ]]; then
       factory_desc="$description. Use when: $trigger_hints"
     fi
@@ -97,3 +101,22 @@ echo ""
 echo "Factory skills generated: $generated"
 echo "Skipped: $skipped"
 echo "Output: $SKILLS_OUT/"
+
+# --- Commands generation ---
+
+rm -rf "$COMMANDS_OUT"
+mkdir -p "$COMMANDS_OUT"
+
+cmd_count=0
+
+if [[ -d "$COMMANDS_SRC" ]]; then
+  for src in "$COMMANDS_SRC"/*.md; do
+    [[ -f "$src" ]] || continue
+    cp "$src" "$COMMANDS_OUT/"
+    cmd_count=$((cmd_count + 1))
+  done
+fi
+
+echo ""
+echo "Factory commands copied: $cmd_count"
+echo "Output: $COMMANDS_OUT/"
