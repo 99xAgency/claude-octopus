@@ -1,3 +1,11 @@
+## [8.38.2] - 2026-03-05
+
+### Fixed
+
+- Factory AI commands not working: `build-factory-skills.sh` now strips Claude Code-specific frontmatter (`command`, `aliases`, `redirect`, `version`, `category`, `tags`) from generated commands, keeping only Factory-compatible fields (`description`, `argument-hint`, `allowed-tools`, `disable-model-invocation`)
+
+---
+
 ## [8.38.1] - 2026-03-05
 
 ### Added
