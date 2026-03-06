@@ -1,3 +1,21 @@
+## [8.38.0] - 2026-03-05
+
+### Added
+
+- Root-level `commands` and `skills` symlinks pointing to `.claude/commands` and `.claude/skills` for Factory AI Droid auto-discovery
+- Cross-platform discovery documentation in `docs/FACTORY-AI.md`
+
+### Changed
+
+- Simplified `.factory-plugin/plugin.json` — removed `skills` and `commands` arrays (Factory uses directory-based auto-discovery, not manifest arrays)
+- Updated troubleshooting in `docs/FACTORY-AI.md` with symlink verification steps
+
+### Fixed
+
+- Factory AI Droid not discovering slash commands after plugin install (no `commands/` or `skills/` at plugin root)
+
+---
+
 ## [8.37.0] - 2026-03-05
 
 ### Removed

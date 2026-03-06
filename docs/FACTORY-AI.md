@@ -101,6 +101,19 @@ Octopus runs its orchestration layer (`scripts/orchestrate.sh`) as a bash subpro
 
 The only platform-specific code is version detection (`detect_claude_code_version()`), which auto-detects Factory and assumes full feature parity.
 
+### Cross-Platform Command/Skill Discovery
+
+Claude Code discovers commands and skills from `.claude/commands/` and `.claude/skills/` (declared in `.claude-plugin/plugin.json`). Factory AI uses directory-based auto-discovery from `commands/` and `skills/` at the plugin root.
+
+To serve both platforms from the same files, the plugin root contains symlinks:
+
+```
+commands -> .claude/commands
+skills -> .claude/skills
+```
+
+Git tracks symlinks natively, so both platforms resolve to the same files with no duplication or sync overhead.
+
 ## Troubleshooting
 
 ### Plugin not loading
@@ -114,7 +127,19 @@ Check that `.factory-plugin/plugin.json` exists in the plugin root.
 
 ### Commands not appearing
 
-Run `/plugins` in Droid to check plugin status. Ensure the plugin is enabled at the correct scope (user or project).
+Verify the `commands` and `skills` symlinks exist at the plugin root:
+```bash
+ls -la commands skills
+# Should show: commands -> .claude/commands, skills -> .claude/skills
+```
+
+If symlinks are broken, recreate them:
+```bash
+ln -s .claude/commands commands
+ln -s .claude/skills skills
+```
+
+Also run `/plugins` in Droid to check plugin status. Ensure the plugin is enabled at the correct scope (user or project).
 
 ### External providers not working
 
