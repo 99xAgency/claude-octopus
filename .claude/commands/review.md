@@ -7,6 +7,12 @@ description: Expert code review with comprehensive quality assessment and securi
 
 ## 🤖 INSTRUCTIONS FOR CLAUDE
 
+### MANDATORY COMPLIANCE — DO NOT SKIP
+
+**When the user explicitly invokes `/octo:review`, you MUST execute the structured review workflow below.** You are PROHIBITED from doing a quick review directly, skipping the clarifying questions, or deciding the task is "too simple" for this workflow. The user chose this command deliberately — respect that choice.
+
+---
+
 When the user invokes this command (e.g., `/octo:review <arguments>`):
 
 ### Step 1: Ask Clarifying Questions

@@ -10,6 +10,12 @@ aliases:
 
 ## 🤖 INSTRUCTIONS FOR CLAUDE
 
+### MANDATORY COMPLIANCE — DO NOT SKIP
+
+**When the user explicitly invokes `/octo:deliver`, you MUST execute the structured workflow below.** You are PROHIBITED from doing the task directly, skipping the validation/review phase, or deciding the task is "too simple" for this workflow. The user chose this command deliberately — respect that choice.
+
+---
+
 When the user invokes this command (e.g., `/octo:deliver <arguments>`):
 
 **✓ CORRECT - Use the Skill tool:**

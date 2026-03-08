@@ -7,6 +7,12 @@ description: Security audit with OWASP compliance and vulnerability detection
 
 ## 🤖 INSTRUCTIONS FOR CLAUDE
 
+### MANDATORY COMPLIANCE — DO NOT SKIP
+
+**When the user explicitly invokes `/octo:security`, you MUST execute the structured security audit workflow below.** You are PROHIBITED from doing a quick check directly, skipping the clarifying questions, or deciding the task is "too simple" for this workflow. The user chose this command deliberately — respect that choice.
+
+---
+
 When the user invokes this command (e.g., `/octo:security <arguments>`):
 
 ### Step 1: Ask Clarifying Questions

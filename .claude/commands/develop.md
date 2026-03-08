@@ -10,6 +10,12 @@ aliases:
 
 ## 🤖 INSTRUCTIONS FOR CLAUDE
 
+### MANDATORY COMPLIANCE — DO NOT SKIP
+
+**When the user explicitly invokes `/octo:develop`, you MUST execute the structured workflow below.** You are PROHIBITED from doing the task directly, skipping the development phase with quality gates, or deciding the task is "too simple" for this workflow. The user chose this command deliberately — respect that choice.
+
+---
+
 When the user invokes this command (e.g., `/octo:develop <arguments>`):
 
 **✓ CORRECT - Use the Skill tool:**

@@ -10,6 +10,20 @@ aliases:
 
 ## 🤖 INSTRUCTIONS FOR CLAUDE
 
+### MANDATORY COMPLIANCE — DO NOT SKIP
+
+**When the user explicitly invokes `/octo:embrace`, you MUST execute the full workflow below. You are PROHIBITED from:**
+- Deciding the task is "too simple" for the workflow
+- Doing the task directly instead of running the phases
+- Skipping phases because you judge them unnecessary
+- Substituting your own approach for the structured workflow
+
+**The user chose `/octo:embrace` deliberately.** Respect that choice. Even for seemingly simple tasks, the workflow adds multi-provider research, structured definition, quality gates, and validation that the user wants. If the task truly doesn't benefit from the workflow, the user will tell you — do not make that judgment yourself.
+
+**If you catch yourself thinking "this is straightforward, I'll just do it directly" — STOP. That is exactly the behavior this instruction prohibits.**
+
+---
+
 When the user invokes this command (e.g., `/octo:embrace <arguments>`):
 
 ### Step 1: Ask Clarifying Questions

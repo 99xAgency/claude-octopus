@@ -19,6 +19,12 @@ aliases:
 
 ## 🤖 INSTRUCTIONS FOR CLAUDE
 
+### MANDATORY COMPLIANCE — DO NOT SKIP
+
+**When the user explicitly invokes `/octo:plan`, you MUST execute the structured planning workflow below.** You are PROHIBITED from doing the task directly, skipping the intent capture questions, or deciding the task is "too simple" for structured planning. The user chose this command deliberately — respect that choice.
+
+---
+
 When the user invokes this command (e.g., `/octo:plan <arguments>`):
 
 ### Step 1: Capture Comprehensive Intent
