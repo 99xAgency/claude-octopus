@@ -19,7 +19,13 @@
   for Claude-side agents, respecting native CC model settings without duplicate config
 - Spec mode plan view alignment: `flow-spec.md` Step 7.5 uses `EnterPlanMode` for NLSpec review
   when VSCode plan view is available (CC v2.1.70+), with graceful terminal fallback
-- 74-test suite (`test-v8.41.0-feature-adoption.sh`) covering hooks, agents, sync, and quality
+- 89-test suite (`test-v8.41.0-feature-adoption.sh`) covering hooks, agents, sync, droids, telemetry, and auto-memory
+- Factory droid generation in `build-factory-skills.sh` — generates `agents/droids/` from `.claude/agents/`
+  so Factory AI discovers native droids alongside Claude Code agent definitions
+- Native HTTP telemetry hook in hooks.json (`"type": "http"`) alongside shell fallback;
+  shell hook skips when `SUPPORTS_HTTP_HOOKS=true` to avoid double telemetry
+- SessionStart auto-memory restoration (`session-start-memory.sh`) — reads persisted preferences
+  from `octopus-preferences.md` on session start and injects them into `session.json`
 
 ### Changed
 
@@ -28,10 +34,11 @@
   - 5 flow aliases deleted: probe, grasp, tangle, ink, research
   - Matching skills now have `user-invocable: true` frontmatter for direct invocation
 - Hook event count: 10 → 13 (PreCompact, SessionEnd, UserPromptSubmit)
-- Total hook scripts: 25 → 28
+- Total hook scripts: 25 → 29
 - Task manager simplified: `create_embrace_tasks()` and `create_phase_task()` deprecated
   in favor of native TodoWrite for Claude-side task tracking
-- Telemetry webhook header updated with HTTP hook migration guidance
+- Telemetry webhook updated: native HTTP hook entry in hooks.json with shell fallback;
+  shell hook has `SUPPORTS_HTTP_HOOKS` guard to skip when HTTP hooks are active
 
 ---
 

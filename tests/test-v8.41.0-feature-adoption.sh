@@ -297,6 +297,60 @@ else
     fail "4.3 SessionEnd does NOT persist autonomy"
 fi
 
+# ─── Suite 4b: SessionStart Auto-Memory Restoration ──────────────
+echo ""
+echo "Suite 4b: SessionStart Auto-Memory Restoration"
+echo "────────────────────────────────────────────────"
+
+# 4b.1 session-start-memory.sh exists and is executable
+if [[ -x "$PLUGIN_ROOT/hooks/session-start-memory.sh" ]]; then
+    pass "4b.1 session-start-memory.sh exists and is executable"
+else
+    fail "4b.1 session-start-memory.sh missing or not executable"
+fi
+
+# 4b.2 session-start-memory.sh registered in hooks.json under SessionStart
+if grep -c 'session-start-memory.sh' "$HOOKS_JSON" >/dev/null 2>&1; then
+    pass "4b.2 session-start-memory.sh registered in hooks.json"
+else
+    fail "4b.2 session-start-memory.sh NOT registered in hooks.json"
+fi
+
+# 4b.3 session-start-memory.sh reads octopus-preferences.md
+if grep -c 'octopus-preferences.md' "$PLUGIN_ROOT/hooks/session-start-memory.sh" >/dev/null 2>&1; then
+    pass "4b.3 session-start-memory.sh reads octopus-preferences.md"
+else
+    fail "4b.3 session-start-memory.sh does NOT read preferences"
+fi
+
+# 4b.4 session-start-memory.sh restores autonomy preference
+if grep -c 'autonomy' "$PLUGIN_ROOT/hooks/session-start-memory.sh" >/dev/null 2>&1; then
+    pass "4b.4 session-start-memory.sh restores autonomy preference"
+else
+    fail "4b.4 session-start-memory.sh does NOT restore autonomy"
+fi
+
+# 4b.5 session-start-memory.sh uses set -euo pipefail
+if grep -c 'set -euo pipefail' "$PLUGIN_ROOT/hooks/session-start-memory.sh" >/dev/null 2>&1; then
+    pass "4b.5 session-start-memory.sh uses set -euo pipefail"
+else
+    fail "4b.5 session-start-memory.sh missing set -euo pipefail"
+fi
+
+# 4b.6 session-start-memory.sh exits cleanly
+if grep -c 'exit 0' "$PLUGIN_ROOT/hooks/session-start-memory.sh" >/dev/null 2>&1; then
+    pass "4b.6 session-start-memory.sh exits cleanly (exit 0)"
+else
+    fail "4b.6 session-start-memory.sh does NOT exit cleanly"
+fi
+
+# 4b.7 session-start-memory.sh sets restored_from_memory flag
+if grep -c 'restored_from_memory' "$PLUGIN_ROOT/hooks/session-start-memory.sh" >/dev/null 2>&1; then
+    pass "4b.7 session-start-memory.sh sets restored_from_memory flag"
+else
+    fail "4b.7 session-start-memory.sh missing restored_from_memory flag"
+fi
+
 # ─── Suite 5: Telemetry HTTP Hook Readiness ─────────────────────
 echo ""
 echo "Suite 5: Telemetry Hook"
@@ -323,6 +377,36 @@ else
     fail "5.3 Telemetry may block workflow execution"
 fi
 
+# 5.4 Native HTTP hook entry in hooks.json for telemetry
+if grep -c '"type": "http"' "$HOOKS_JSON" >/dev/null 2>&1; then
+    pass "5.4 Native HTTP hook entry exists in hooks.json"
+else
+    fail "5.4 No native HTTP hook entry in hooks.json"
+fi
+
+# 5.5 HTTP hook uses OCTOPUS_WEBHOOK_URL
+if python3 -c "
+import json
+with open('$HOOKS_JSON') as f:
+    d = json.load(f)
+for entry in d.get('PostToolUse', []):
+    for h in entry.get('hooks', []):
+        if h.get('type') == 'http' and 'OCTOPUS_WEBHOOK_URL' in h.get('url', ''):
+            exit(0)
+exit(1)
+" 2>/dev/null; then
+    pass "5.5 HTTP hook uses OCTOPUS_WEBHOOK_URL"
+else
+    fail "5.5 HTTP hook does NOT use OCTOPUS_WEBHOOK_URL"
+fi
+
+# 5.6 Shell fallback skips when HTTP hooks supported
+if grep -c 'SUPPORTS_HTTP_HOOKS' "$PLUGIN_ROOT/hooks/telemetry-webhook.sh" >/dev/null 2>&1; then
+    pass "5.6 Shell fallback skips when SUPPORTS_HTTP_HOOKS=true"
+else
+    fail "5.6 Shell fallback has no SUPPORTS_HTTP_HOOKS guard"
+fi
+
 # ─── Suite 6: Task Manager Simplification ───────────────────────
 echo ""
 echo "Suite 6: Task Manager"
@@ -340,6 +424,73 @@ if grep -c 'cleanup' "$PLUGIN_ROOT/scripts/task-manager.sh" >/dev/null 2>&1; the
     pass "6.2 Task manager has cleanup command"
 else
     fail "6.2 Task manager missing cleanup"
+fi
+
+# ─── Suite 7: Factory Droid Generation ─────────────────────────
+echo ""
+echo "Suite 7: Factory Droid Generation"
+echo "──────────────────────────────────"
+
+DROIDS_DIR="$PLUGIN_ROOT/agents/droids"
+
+# 7.1 agents/droids/ directory exists
+if [[ -d "$DROIDS_DIR" ]]; then
+    pass "7.1 agents/droids/ directory exists"
+else
+    fail "7.1 agents/droids/ directory does NOT exist"
+fi
+
+# 7.2 Droid count matches agent count
+if [[ -d "$DROIDS_DIR" && -d "$AGENTS_DIR" ]]; then
+    DROID_COUNT=$(find "$DROIDS_DIR" -name '*.md' 2>/dev/null | wc -l | tr -d ' ')
+    if [[ "$DROID_COUNT" -eq "$AGENT_COUNT" ]]; then
+        pass "7.2 Droid count ($DROID_COUNT) matches agent count ($AGENT_COUNT)"
+    else
+        fail "7.2 Droid count ($DROID_COUNT) != agent count ($AGENT_COUNT)"
+    fi
+fi
+
+# 7.3 Every agent has a corresponding droid
+if [[ -d "$DROIDS_DIR" ]]; then
+    DROID_SYNC_PASS=true
+    for agent_file in "$AGENTS_DIR"/*.md; do
+        [[ ! -f "$agent_file" ]] && continue
+        droid_name=$(basename "$agent_file")
+        if [[ ! -f "$DROIDS_DIR/$droid_name" ]]; then
+            fail "7.3 Agent '$droid_name' has NO matching droid"
+            DROID_SYNC_PASS=false
+        fi
+    done
+    if [[ "$DROID_SYNC_PASS" == "true" ]]; then
+        pass "7.3 All agents have matching Factory droids"
+    fi
+fi
+
+# 7.4 Droids have required frontmatter (name, description, model)
+if [[ -d "$DROIDS_DIR" ]]; then
+    DROID_FM_PASS=true
+    for droid_file in "$DROIDS_DIR"/*.md; do
+        [[ ! -f "$droid_file" ]] && continue
+        droid_name=$(basename "$droid_file" .md)
+        if grep -c '^name:' "$droid_file" >/dev/null 2>&1 && \
+           grep -c '^description:' "$droid_file" >/dev/null 2>&1 && \
+           grep -c '^model:' "$droid_file" >/dev/null 2>&1; then
+            : # pass silently
+        else
+            fail "7.4 Droid '$droid_name' missing frontmatter fields"
+            DROID_FM_PASS=false
+        fi
+    done
+    if [[ "$DROID_FM_PASS" == "true" ]]; then
+        pass "7.4 All droids have name/description/model frontmatter"
+    fi
+fi
+
+# 7.5 build-factory-skills.sh generates droids
+if grep -c 'agents/droids\|DROIDS_OUT' "$PLUGIN_ROOT/scripts/build-factory-skills.sh" >/dev/null 2>&1; then
+    pass "7.5 build-factory-skills.sh includes droid generation"
+else
+    fail "7.5 build-factory-skills.sh does NOT generate droids"
 fi
 
 # ─── Summary ────────────────────────────────────────────────────

@@ -262,6 +262,26 @@ Verify each section:
 
 ---
 
+### STEP 7.5: Native Plan View Integration (OPTIONAL — CC v2.1.70+)
+
+**If VSCode is active and Claude Code supports plan view (v2.1.70+):**
+
+Use `EnterPlanMode` to present the generated NLSpec as a structured plan that the user
+can review, comment on, and approve through the native plan UI. This provides a richer
+review experience than plain markdown output.
+
+```
+EnterPlanMode with the NLSpec content as the plan body
+```
+
+**If plan mode is not available or the user is in terminal mode:**
+Skip this step and proceed to Step 8 (file save).
+
+This aligns the spec workflow with Claude Code's native structured planning features
+when they are available, while falling back gracefully to file-based output.
+
+---
+
 ### STEP 8: Save & Update State (MANDATORY)
 
 **Save the NLSpec:**

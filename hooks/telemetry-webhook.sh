@@ -15,6 +15,14 @@ if [[ -z "$WEBHOOK_URL" ]]; then
     exit 0
 fi
 
+# v8.41.0: When HTTP hooks are supported (CC v2.1.63+), the native HTTP hook entry
+# in hooks.json fires first and handles telemetry directly. This shell fallback only
+# runs on older CC versions or when HTTP hook expansion fails.
+if [[ "${SUPPORTS_HTTP_HOOKS:-false}" == "true" ]]; then
+    echo '{"decision": "continue"}'
+    exit 0
+fi
+
 # Read tool output from stdin
 HOOK_DATA=""
 if [[ ! -t 0 ]]; then

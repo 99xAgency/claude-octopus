@@ -169,3 +169,52 @@ echo ""
 echo "Factory commands generated: $cmd_count"
 [[ $cmd_skipped -gt 0 ]] && echo "Skipped: $cmd_skipped"
 echo "Output: $COMMANDS_OUT/"
+
+# --- Agents/Droids generation (v8.41.0) ---
+# Factory discovers droids from agents/ directory. The personas are already there
+# via agents/config.yaml + agents/personas/*.md. This section generates
+# Factory-compatible droid entries from .claude/agents/ definitions so
+# both Claude Code and Factory can invoke them as native subagents.
+
+AGENTS_SRC="$PLUGIN_ROOT/.claude/agents"
+DROIDS_OUT="$PLUGIN_ROOT/agents/droids"
+
+if [[ -d "$AGENTS_SRC" ]]; then
+  rm -rf "$DROIDS_OUT"
+  mkdir -p "$DROIDS_OUT"
+
+  droid_count=0
+
+  for src in "$AGENTS_SRC"/*.md; do
+    [[ -f "$src" ]] || continue
+    filename="$(basename "$src")"
+    agent_name="$(basename "$src" .md)"
+
+    # Extract frontmatter
+    frontmatter="$(awk 'BEGIN{c=0} /^---$/{c++; if(c==2) exit; next} c==1{print}' "$src")"
+
+    # Extract key fields
+    desc="$(echo "$frontmatter" | grep "^description:" | head -1 | sed 's/^description: *//')"
+    model="$(echo "$frontmatter" | grep "^model:" | head -1 | sed 's/^model: *//')"
+
+    # Extract body
+    body="$(awk 'BEGIN{c=0} /^---$/{c++; if(c==2){found=1; next}} found{print}' "$src")"
+
+    # Write Factory-compatible droid definition
+    cat > "$DROIDS_OUT/$filename" << DROIDEOF
+---
+name: $agent_name
+description: $desc
+model: ${model:-inherit}
+---
+$body
+DROIDEOF
+
+    echo "  GEN droid: $agent_name"
+    droid_count=$((droid_count + 1))
+  done
+
+  echo ""
+  echo "Factory droids generated: $droid_count"
+  echo "Output: $DROIDS_OUT/"
+fi
