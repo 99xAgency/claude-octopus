@@ -1,3 +1,11 @@
+## [8.49.1] - 2026-03-10
+
+### Changed
+
+- Fix /octo:setup command name mismatch (closes #17)
+
+---
+
 ## [8.49.0] - 2026-03-10
 
 ### Changed
