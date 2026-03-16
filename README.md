@@ -33,19 +33,13 @@ A Claude Code plugin that turns one model into three. Orchestrates Codex, Gemini
 
 | Version | What shipped |
 |---------|-------------|
-| **9.0.0** | **CC v2.1.76 sync + claude-mem + command audit** — 100 feature flags, claude-mem companion integration, command audit remediation (staged-review rewrite, multi-LLM brainstorm/prd/prd-score, review "All areas" option), 81 tests |
-| **8.57** | **CC v2.1.76 feature sync** — 6 new detection flags (MCP elicitation, effort command, BG partial results), 5 doctor checks wired |
-| **8.56** | **CC v2.1.72-v2.1.74 sync** — 8 new flags (auto memory dir, full model IDs, plugin dir override), smart router v2.0 |
-| **8.55** | **Smart router v2.0** — `/octo:octo` rewritten, 17 workflows, 3-tier priority routing, decision tree confidence, routing analytics |
-| **8.54** | **Multi-agentic research** — parallel Agent dispatch per perspective, user-configurable intensity, Claude in-conversation synthesis |
-| **8.53** | **Agent ergonomics** — `readonly: true` frontmatter for read-only agents, user-scope agents from `~/.claude/agents/`, `/octo:resume` for agent continuation |
-| **8.52** | **CC v2.1.73 sync** — 6 new flags (model overrides, subagent model fix, skill deadlock fix), enterprise compatibility warnings |
-| **8.50** | **Multi-LLM review** — 3-round parallel fleet (Codex + Gemini + Claude + Perplexity), inline PR comments, REVIEW.md support |
-| **8.45** | **Reaction engine** — configurable auto-response to CI failures, review comments, stuck agents; 13-state PR lifecycle tracking |
-| **8.44** | **Agent lifecycle & PR integration** — agent registry with persistent tracking, worktree-per-agent parallelism, PR comment posting |
-| **8.43** | **Output quality & design critique** — context-aware quality injection (6 dev subtypes), three-way adversarial design critique |
-| **8.42** | **Workflow compliance & security** — mandatory execution enforcement, anti-injection nonces, Multi-LLM debate gates |
-| **8.41** | **Feature adoption** — 3 new hooks, 10 native agents, auto-memory persistence, command consolidation |
+| **9.0** | **claude-mem integration + multi-LLM brainstorm/PRD** — persistent cross-session memory, `/octo:brainstorm` and `/octo:prd` now use all three providers, `/octo:review` "All areas" option |
+| **8.55** | **Smart router v2.0** — just say what you need and `/octo:octo` routes to the right workflow. 17 supported workflows, learns your preferences over time |
+| **8.54** | **Multi-agentic research** — `/octo:research` now runs perspectives in parallel with configurable intensity (Quick / Standard / Deep) |
+| **8.53** | **Agent resume + custom agents** — `/octo:resume` continues previous agents, drop your own agents in `~/.claude/agents/` |
+| **8.50** | **Multi-LLM code review** — 4-agent fleet (Codex logic + Gemini security + Claude architecture + Perplexity CVE), inline PR comments |
+| **8.45** | **Reaction engine** — auto-responds to CI failures, review comments, and stuck agents without manual intervention |
+| **8.44** | **Parallel workstreams** — `/octo:parallel` runs tasks in isolated git worktrees, each with its own agent |
 
 [Full changelog](CHANGELOG.md)
 
