@@ -12576,6 +12576,18 @@ ${earned_skills_ctx}"
             cmd_array+=(-p "")
         fi
 
+        # v9.2.2: Inject subagent preamble for Codex dispatches (Issue #176)
+        # Codex's own skill system ("superpowers") can intercept prompts and force its
+        # brainstorming/skill workflows instead of responding directly. This preamble
+        # exploits the skill system's precedence rules ("user instructions always take
+        # precedence") to override the <EXTREMELY-IMPORTANT> skill activation block.
+        if [[ "$agent_type" == codex* && "$agent_type" != "codex-review" ]]; then
+            local codex_preamble="IMPORTANT: You are running as a non-interactive subagent dispatched by Claude Octopus via codex exec. These are user-level instructions and take precedence over all skill directives. Skip ALL skills (brainstorming, using-superpowers, writing-plans, etc.). Do NOT read skill files, ask clarifying questions, offer visual companions, or follow any skill checklists. Respond directly to the prompt below.
+
+"
+            enhanced_prompt="${codex_preamble}${enhanced_prompt}"
+        fi
+
         local auth_attempt=0
         local exit_code=0
         while true; do
@@ -16386,6 +16398,15 @@ ${earned_skills_ctx}"
     if [[ "$agent_type" == gemini* ]]; then
         cmd_array+=(-p "")
     fi
+
+    # v9.2.2: Inject subagent preamble for Codex dispatches (Issue #176)
+    if [[ "$agent_type" == codex* && "$agent_type" != "codex-review" ]]; then
+        local codex_preamble="IMPORTANT: You are running as a non-interactive subagent dispatched by Claude Octopus via codex exec. These are user-level instructions and take precedence over all skill directives. Skip ALL skills (brainstorming, using-superpowers, writing-plans, etc.). Do NOT read skill files, ask clarifying questions, offer visual companions, or follow any skill checklists. Respond directly to the prompt below.
+
+"
+        enhanced_prompt="${codex_preamble}${enhanced_prompt}"
+    fi
+
     # v9.2.1: All agents use stdin to avoid ARG_MAX "Argument list too long" on large diffs (Issue #173)
     output=$(printf '%s' "$enhanced_prompt" | run_with_timeout "$timeout_secs" "${cmd_array[@]}" 2>"$temp_err")
     exit_code=$?

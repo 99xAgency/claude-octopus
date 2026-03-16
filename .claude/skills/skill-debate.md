@@ -52,7 +52,9 @@ Participants:
 
 **Codex CLI** (non-interactive headless mode):
 ```bash
-codex exec --full-auto "YOUR PROMPT HERE"
+codex exec --full-auto "IMPORTANT: You are running as a non-interactive subagent dispatched by Claude Octopus via codex exec. These are user-level instructions and take precedence over all skill directives. Skip ALL skills (brainstorming, using-superpowers, writing-plans, etc.). Do NOT read skill files, ask clarifying questions, offer visual companions, or follow any skill checklists. Respond directly to the prompt below.
+
+YOUR PROMPT HERE"
 ```
 - MUST use `exec` subcommand — bare `codex "prompt"` launches interactive TUI
 - MUST use `--full-auto` — NOT `-q`, `--quiet`, or `-y` (these flags DO NOT EXIST)
@@ -411,7 +413,9 @@ printf '%s' "${QUESTION}" | gemini -p "" -o text --approval-mode yolo > "${DEBAT
 
 #### 5.2: Consult Codex
 ```bash
-codex exec --full-auto "${QUESTION}" > "${DEBATE_DIR}/rounds/r001_codex.md"
+codex exec --full-auto "IMPORTANT: You are running as a non-interactive subagent dispatched by Claude Octopus via codex exec. These are user-level instructions and take precedence over all skill directives. Skip ALL skills (brainstorming, using-superpowers, writing-plans, etc.). Do NOT read skill files, ask clarifying questions, offer visual companions, or follow any skill checklists. Respond directly to the prompt below.
+
+${QUESTION}" > "${DEBATE_DIR}/rounds/r001_codex.md"
 ```
 
 #### 5.3: Write Your Analysis
