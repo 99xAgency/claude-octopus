@@ -14,7 +14,7 @@ fail() { TEST_COUNT=$((TEST_COUNT+1)); FAIL_COUNT=$((FAIL_COUNT+1)); echo "FAIL:
 
 # Note: octopus-statusline.sh is excluded — Claude Code cancels in-flight statusline
 # scripts on new updates, so timeout guard is unnecessary there (removed in v9.7.4).
-for hook in context-reinforcement.sh user-prompt-submit.sh \
+for hook in context-reinforcement.sh context-awareness.sh user-prompt-submit.sh \
             subagent-result-capture.sh budget-gate.sh task-completion-checkpoint.sh; do
     hook_file="$HOOKS_DIR/$hook"
     if [[ ! -f "$hook_file" ]]; then

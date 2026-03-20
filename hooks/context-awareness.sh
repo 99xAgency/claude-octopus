@@ -13,7 +13,11 @@
 set -euo pipefail
 
 # Read stdin (required by hook protocol — drain to prevent SIGPIPE)
-cat > /dev/null 2>&1 || true
+if command -v timeout &>/dev/null; then
+    timeout 3 cat > /dev/null 2>&1 || true
+else
+    cat > /dev/null 2>&1 || true
+fi
 
 SESSION="${CLAUDE_SESSION_ID:-unknown}"
 # Exit if session ID unknown — cannot safely identify the right bridge file

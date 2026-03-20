@@ -89,7 +89,9 @@
   ],
   "PostToolUse": [
     {
-      "matcher": {},
+      "matcher": {
+        "tool": "Bash|Agent|Write|Edit"
+      },
       "hooks": [
         {
           "type": "command",
@@ -142,11 +144,6 @@
       "hooks": [
         {
           "type": "command",
-          "command": "${CLAUDE_PLUGIN_ROOT}/hooks/session-sync.sh",
-          "additionalContext": "Claude Code Session: ${CLAUDE_SESSION_ID}"
-        },
-        {
-          "type": "command",
           "command": "${CLAUDE_PLUGIN_ROOT}/scripts/session-manager.sh export",
           "additionalContext": "Initializing Octopus session variables for multi-provider orchestration"
         },
@@ -157,7 +154,7 @@
         {
           "type": "command",
           "command": "${CLAUDE_PLUGIN_ROOT}/hooks/session-start-memory.sh",
-          "additionalContext": "Restore persisted user preferences from auto-memory"
+          "additionalContext": "Restore persisted user preferences and session sync from auto-memory"
         },
         {
           "type": "command",
