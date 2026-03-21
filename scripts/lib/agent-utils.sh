@@ -183,7 +183,7 @@ parse_yaml_value() {
 # Default completion promise pattern
 COMPLETION_PROMISE="${CLAUDE_OCTOPUS_COMPLETION_PROMISE:-<promise>COMPLETE</promise>}"
 RALPH_MAX_ITERATIONS="${CLAUDE_OCTOPUS_RALPH_MAX_ITERATIONS:-50}"
-RALPH_STATE_FILE="${WORKSPACE_DIR}/ralph-state.md"
+RALPH_STATE_FILE=""  # Deferred — set lazily in init_ralph_state()
 
 # Check if output contains completion promise
 check_completion_promise() {
@@ -212,6 +212,8 @@ init_ralph_state() {
     local prompt="$1"
     local max_iterations="${2:-$RALPH_MAX_ITERATIONS}"
     local promise="${3:-$COMPLETION_PROMISE}"
+    # Lazy init — WORKSPACE_DIR not available at source time
+    RALPH_STATE_FILE="${WORKSPACE_DIR}/ralph-state.md"
 
     cat > "$RALPH_STATE_FILE" << EOF
 ---
