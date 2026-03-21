@@ -330,7 +330,19 @@ fi
 
 ---
 
-### STEP 7: Present Implementation Plan (Only After Steps 1-6 Complete)
+### STEP 6.5: Post-Generation Verification (MANDATORY)
+
+After generating or modifying code, VERIFY before declaring done:
+
+1. Did the generated code compile/parse without errors? Run the project's build/lint command.
+2. Did relevant tests pass? Run the project's test suite (or affected tests).
+3. Does the change match the stated intent (not just "looks right")? Re-read the user's request and compare.
+
+If ANY check fails, fix before proceeding — do not declare the step complete with known failures.
+
+---
+
+### STEP 7: Present Implementation Plan (Only After Steps 1-6.5 Complete)
 
 Read the synthesis file and present:
 - Recommended approach
