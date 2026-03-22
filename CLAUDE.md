@@ -201,6 +201,7 @@ Before running workflows, check provider availability:
 - OpenRouter: check for OPENROUTER_API_KEY
 - Ollama: `command -v ollama` + server health at http://localhost:11434
 - Copilot CLI: `command -v copilot` + auth (COPILOT_GITHUB_TOKEN or gh CLI)
+- Qwen CLI: `command -v qwen` + auth (~/.qwen/oauth_creds.json or QWEN_API_KEY)
 
 If a provider is unavailable, note it in the banner:
 ```

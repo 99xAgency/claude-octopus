@@ -1,3 +1,21 @@
+## [9.10.0] - 2026-03-22
+
+### Added
+
+- **Qwen CLI as 8th provider**: Free-tier research via Qwen OAuth (1,000-2,000 requests/day). Fork of Gemini CLI — same dispatch pattern. Agent types: `qwen`, `qwen-research`. Detection, doctor, health check, dispatch, model resolver, circuit breaker, workflows, preflight, and install-deps all wired.
+- **Copilot Coding Agent native files**: `.github/agents/*.agent.md` for all 10 agents. YAML frontmatter with Copilot tool aliases (read, edit, execute, search). Makes agents discoverable by GitHub's server-side coding agent.
+- **Gemini .toml custom commands**: `.gemini/commands/octo/` with 4 persona commands (research, review, architect, implement) for human interactive use. Not used in headless dispatch (stdin+slash don't compose — verified via Codex source analysis).
+- **Gemini provider test suite**: 44 tests covering dispatch, detection, doctor, health, models, circuit breaker, workflows, embrace, MCP, .toml commands, pricing, and config.
+
+### Fixed
+
+- **P0: json_extract reliability** — Replaced brittle regex (`"field":"value"`) with 3-tier fallback: jq (if available) → python3 one-liner → improved regex that handles whitespace, escaped quotes, numeric values, and missing fields.
+- **P1: OpenRouter hardening** — Added `--max-time 60` timeout, HTTP status code handling (429 retry with Retry-After, 502/503/524 error messages), deduplicated `openrouter_execute()` and `openrouter_execute_model()` into one core function.
+- **P1: DeepSeek model update** — `deepseek/deepseek-r1` → `deepseek/deepseek-r1-0528` across dispatch, model-resolver, models catalog, and docs.
+- **CC version detection tests consolidated** — 4 test files merged into `test-cc-version-detection.sh` (103 tests).
+
+---
+
 ## [9.9.3] - 2026-03-22
 
 ### Fixed

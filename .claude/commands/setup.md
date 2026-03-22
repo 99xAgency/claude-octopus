@@ -138,6 +138,24 @@ export COPILOT_GITHUB_TOKEN="github_pat_..."
 
 **Note:** Copilot is fully optional. Classic PATs (`ghp_*`) are NOT supported — use fine-grained PATs (`github_pat_*`) or OAuth login.
 
+## Optional: Add Qwen CLI for Free-Tier Research
+
+Qwen CLI (fork of Gemini CLI) offers 1,000-2,000 free requests per day via Qwen OAuth. Excellent for research and code review at zero cost.
+
+**Install:**
+```bash
+npm install -g @qwen-code/qwen-code
+```
+
+**Authenticate:**
+```bash
+# Interactive OAuth (recommended — free tier, no API key needed)
+qwen
+# Follow the browser-based OAuth flow
+```
+
+**Note:** Qwen is fully optional. It uses the same dispatch pattern as Gemini CLI.
+
 ## If You See: CODEX_AUTH=none or GEMINI_AUTH=none
 
 The CLI is installed but not authenticated. Configure authentication:
@@ -255,6 +273,8 @@ No! You only need ONE provider (Codex or Gemini) to use Claude Octopus. Both pro
 - **Gemini (Google):** Best for analysis, long-context understanding, multi-modal tasks
 - **Perplexity (optional):** Adds live web search with citations to research workflows
 - **Copilot (optional):** Zero-cost research via GitHub subscription — uses Claude/GPT/Gemini models
+- **Qwen (optional):** Free-tier research — 1,000-2,000 requests/day via Qwen OAuth
+- **Ollama (optional):** Zero-cost local LLM — fully offline, privacy-sensitive workflows
 
 Having both providers enables multi-AI workflows where different models review each other's work, but a single provider works great for most tasks. Perplexity is a bonus — it grounds research in live web data.
 

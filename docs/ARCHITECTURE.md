@@ -6,7 +6,7 @@ This document explains how Claude Octopus orchestrates multiple AI providers and
 
 ## Overview
 
-Claude Octopus coordinates **five core AI providers** (plus two optional local/supplementary providers) to give you multi-perspective analysis:
+Claude Octopus coordinates **eight AI providers** — one per tentacle to give you multi-perspective analysis:
 
 ```
     +------------------+
@@ -39,6 +39,7 @@ Claude Octopus coordinates **five core AI providers** (plus two optional local/s
 | **OpenRouter** | API-only | 100+ models (GLM-5, Kimi K2.5, DeepSeek R1, etc.) | Your `OPENROUTER_API_KEY` |
 | **Ollama** *(optional)* | `ollama run <model>` | Local models (llama3.3, mistral, etc.) | Free (local) |
 | **Copilot** *(optional)* | `copilot -p` | GitHub models (Claude/GPT/Gemini) | GitHub Copilot subscription |
+| **Qwen** *(optional)* | `qwen -p` | Qwen3-Coder | Qwen OAuth (free tier) |
 
 > **Note:** Models are as of March 2026. The orchestrate.sh script uses the latest available models. Only Claude is required — all others are optional and auto-detected.
 
@@ -52,6 +53,7 @@ Claude Octopus coordinates **five core AI providers** (plus two optional local/s
 | **Perplexity** | Live web search, CVE lookups, current docs | Discover phase research, dependency analysis |
 | **OpenRouter** | Access to 100+ models, cost routing | Alternative perspectives, budget-conscious workflows |
 | **Ollama** *(optional)* | Zero-cost, offline, privacy | Brainstorming, fallback, air-gapped environments |
+| **Qwen** *(optional)* | Free-tier coding, Chinese language support | Research, code review, zero-cost workflows |
 
 ---
 

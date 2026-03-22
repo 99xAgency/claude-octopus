@@ -1,19 +1,19 @@
 # Claude Octopus
 
-A Claude Code plugin that orchestrates seven AI providers with distinct roles, adversarial review, and consensus gates — so no single model's blind spots slip through.
+A Claude Code plugin that orchestrates eight AI providers with distinct roles, adversarial review, and consensus gates — eight tentacles, zero blind spots.
 
 <p align="center">
   <img src="assets/social-preview.jpg" alt="Claude Octopus" width="640">
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-9.9.3-blue" alt="Version 9.9.3">
+  <img src="https://img.shields.io/badge/Version-9.10.0-blue" alt="Version 9.10.0">
   <img src="https://img.shields.io/badge/Claude_Code-v2.1.50+-blueviolet" alt="Requires Claude Code v2.1.50+">
   <img src="https://img.shields.io/badge/Factory_AI-Compatible-orange" alt="Factory AI Compatible">
   <img src="https://img.shields.io/badge/License-MIT-green" alt="MIT License">
 </p>
 
-🐙 **Seven providers, one workflow.** Other multi-AI tools run providers in parallel and hand you separate answers. Octopus assigns each model a distinct role — Codex for implementation depth, Gemini for ecosystem breadth, Claude for synthesis — then enforces a 75% consensus gate before anything ships. Disagreements get caught, not ignored.
+🐙 **Eight tentacles, one workflow.** Each provider is a tentacle with a distinct role — Codex for implementation depth, Gemini for ecosystem breadth, Qwen for free-tier research, Ollama for local privacy, Copilot for GitHub-native intelligence, Perplexity for live web search, OpenRouter for 100+ model access, and Claude for synthesis. A 75% consensus gate ensures disagreements get caught, not ignored.
 
 🧠 **Persistent cross-session memory.** Deeply integrates with [claude-mem](https://github.com/thedotmack/claude-mem) for searchable, persistent memory across conversations — past decisions, research, and context survive session boundaries so your next workflow picks up where the last one left off.
 
@@ -23,9 +23,9 @@ A Claude Code plugin that orchestrates seven AI providers with distinct roles, a
 
 🐙 **32 specialized personas, 47 commands, 50 skills.** Not generic agents. A security-auditor that thinks in OWASP. A backend-architect that designs APIs. A ui-ux-designer grounded in BM25 design intelligence. Personas activate automatically based on what you ask — say "audit my API" and the right expert shows up. Don't know the command name? Just say what you need — the smart router figures it out.
 
-🐙 **Works with just Claude. Scales to three.** Zero external providers needed to start. You get every persona, every workflow, every skill on day one. Add Codex or Gemini and multi-AI orchestration lights up — parallel research, adversarial debate, cross-model review.
+🐙 **Works with just Claude. Scales to eight.** Zero external providers needed to start. You get every persona, every workflow, every skill on day one. Add providers one at a time — each tentacle activates automatically when detected.
 
-💰 **Subscription Advantage.** Codex and Gemini authenticate via OAuth, so if you already subscribe to ChatGPT or Google AI you pay nothing extra — no API keys required.
+💰 **Three providers cost nothing extra.** Codex and Gemini authenticate via OAuth (included with ChatGPT/Google AI subscriptions). Qwen offers 1,000-2,000 free requests/day via OAuth. Copilot uses your existing GitHub subscription. Ollama runs locally at zero cost. Only Perplexity and OpenRouter require API keys.
 
 ---
 
@@ -33,6 +33,7 @@ A Claude Code plugin that orchestrates seven AI providers with distinct roles, a
 
 | Version | What shipped |
 |---------|-------------|
+| **9.10.0** | **Eight tentacles** — Qwen CLI as 8th provider (free-tier via OAuth), hardened OpenRouter (timeout, retry, HTTP status), robust json_extract (jq/python3/regex), DeepSeek R1-0528, Copilot Coding Agent native `.github/agents/` files. |
 | **9.9.3** | **Copilot dispatch fix + repo polish** — Fixed 5 Copilot integration bugs (#206): dispatch now uses real binary, added to command allowlist/embrace strategies/headless flag/provider metrics. Codex smoke timeout configurable (45s default). Updated README/SECURITY/CONTRIBUTING, YAML issue templates, CODE_OF_CONDUCT, PR template, repo topics/description. |
 | **9.9.2** | **Doc consolidation** — 9 stale docs removed (archived to dev repo), provider counts normalized to 7 across all docs, debate refs updated to four-way, new `config/providers/copilot/CLAUDE.md`. |
 | **9.9.0** | **Copilot CLI + Ollama providers** — GitHub Copilot CLI (GA) as optional zero-cost provider via `copilot -p` programmatic mode with 5-tier fallback auth. Ollama as local LLM provider with CLI dispatch + ANTHROPIC_BASE_URL bridge. Adapter bug fixes: debate flag placement, quality_threshold forwarding, env var allowlists. ARCHITECTURE.md updated to 7-provider model. 23 new adapter tests. |
@@ -160,9 +161,9 @@ Or skip the table — type `/octo:auto <what you want>` or just say `octo <what 
 
 ## How It Works
 
-### Seven Providers, One Workflow
+### Eight Tentacles, One Workflow
 
-Claude Octopus coordinates up to seven AI providers across every workflow:
+Claude Octopus coordinates up to eight AI providers — one per tentacle:
 
 | Provider | Role |
 |----------|------|
@@ -171,6 +172,7 @@ Claude Octopus coordinates up to seven AI providers across every workflow:
 | 🟣 Perplexity | Live web search — CVE lookups, dependency research, current docs |
 | 🌐 OpenRouter | Alternative model routing — access 100+ models via single API |
 | 🟢 Copilot (GitHub) | Zero-cost research — uses existing GitHub Copilot subscription |
+| 🟠 Qwen (Alibaba) | Free-tier research — 1,000-2,000 requests/day via Qwen OAuth |
 | ⚫ Ollama (Local) | Zero-cost local LLM — offline, privacy-sensitive, fallback |
 | 🔵 Claude (Anthropic) | Orchestration — quality gates, consensus building, final synthesis |
 
