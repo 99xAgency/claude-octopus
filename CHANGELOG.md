@@ -1,3 +1,14 @@
+## [9.10.1] - 2026-03-22
+
+### Changed
+
+- **SEO: "Multi-LLM orchestration" in opening paragraph** — First sentence now leads with "Multi-LLM orchestration plugin for Claude Code" and names all 8 providers. This is the Google snippet zone (~155 chars). Repo description updated to match.
+- **README: outcome-first opening bullets** — Lead with what it does for you, not which 8 providers it uses. Defined jargon inline (personas = role-specific agents, skills = reusable workflows).
+- **README: condensed What's New** — 14 detailed changelog rows → 3-row table by major version (v9/v8/v7) with best end-user features.
+- **README: simplified Quickstart** — 3 commands upfront, alternatives + troubleshooting in collapsible `<details>` blocks.
+
+---
+
 ## [9.10.0] - 2026-03-22
 
 ### Added
