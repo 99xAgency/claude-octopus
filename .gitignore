@@ -107,3 +107,9 @@ test-results*.xml
 coverage-report.txt
 coverage-report.html
 *.bak
+
+# Environment & secrets
+.env.local
+.env.*.local
+*.key
+*.pem
