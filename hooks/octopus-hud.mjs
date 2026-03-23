@@ -89,6 +89,15 @@ const SECTION_DEFAULTS = {
   "API Time": false, "5h Reset": false, "7d Reset": false,
 };
 
+// v9.10.2: Named presets for quick config switching
+// Set "preset": "developer" in ~/.claude-octopus/.hud-config.jsonc
+const PRESETS = {
+  minimal: ["Octo", "Model", "Context"],
+  developer: ["Octo", "Model", "5h Usage", "7d Usage", "Context", "Cost", "Changes"],
+  full: ALL_COLUMNS,
+  performance: ["Octo", "Model", "Context", "Tokens", "Output Tokens", "Cache", "API Time", "Session"],
+};
+
 // Phase emoji mapping
 const PHASE_EMOJI = {
   probe: "\u{1F50D}",    // magnifying glass
@@ -129,9 +138,10 @@ function parseJsonc(text) {
 }
 
 // Smart column selection — adapts to context signals
-// input: statusline stdin data, usage: rate limit API data
-function smartColumns(input, usage) {
-  const cols = ["Octo", "Model"]; // Brand + model always first
+// input: statusline stdin data, usage: rate limit API data, base: optional preset columns
+function smartColumns(input, usage, base = null) {
+  const cols = base ? [...base] : ["Octo", "Model"]; // Preset or brand + model first
+  const has = (id) => cols.includes(id);
   // OAuth subscription: true if usage API returned data OR OAuth credentials exist
   const isOAuth = !!usage || !!getCredentials();
   const cost = input?.cost;
@@ -143,36 +153,37 @@ function smartColumns(input, usage) {
 
   // Rate limits — always relevant for subscription users
   if (isOAuth) {
-    cols.push("5h Usage", "7d Usage");
+    if (!has("5h Usage")) cols.push("5h Usage");
+    if (!has("7d Usage")) cols.push("7d Usage");
   }
 
   // Cost — only for API-key users (not OAuth subscription)
-  if (!isOAuth) {
+  if (!isOAuth && !has("Cost")) {
     cols.push("Cost");
   }
 
   // Cache — show when there's meaningful cache activity
-  if (cacheRate !== null && cacheRate > 0) {
+  if (cacheRate !== null && cacheRate > 0 && !has("Cache")) {
     cols.push("Cache");
   }
 
   // Session — show when session has been running > 5 minutes
-  if (durationMs > 5 * 60_000) {
+  if (durationMs > 5 * 60_000 && !has("Session")) {
     cols.push("Session");
   }
 
   // Changes — show when files are being modified
-  if (added > 0 || removed > 0) {
+  if ((added > 0 || removed > 0) && !has("Changes")) {
     cols.push("Changes");
   }
 
   // Tokens — show when context pressure is building (>40%)
-  if (contextPct > 40) {
+  if (contextPct > 40 && !has("Tokens")) {
     cols.push("Tokens");
   }
 
   // Context — always last (most visual, anchors the row)
-  cols.push("Context");
+  if (!has("Context")) cols.push("Context");
 
   return cols;
 }
@@ -186,6 +197,16 @@ function readConfig(input, usage) {
     }
     const cfg = parseJsonc(readFileSync(CONFIG_PATH, "utf-8"));
     const layout = cfg.layout === "horizontal" ? "horizontal" : "vertical";
+    const presetName = cfg.preset || null;
+
+    // v9.10.2: Preset support — named config profiles
+    if (presetName && PRESETS[presetName]) {
+      const presetCols = [...PRESETS[presetName]];
+      if (cfg.smart !== false) {
+        return { columns: smartColumns(input, usage, presetCols), layout, smart: true, preset: presetName };
+      }
+      return { columns: presetCols, layout, smart: false, preset: presetName };
+    }
 
     // Smart mode: auto-detect columns based on context
     if (cfg.smart !== false) {
@@ -449,7 +470,10 @@ function readTailLines(filePath, fileSize, maxBytes) {
 }
 
 async function parseTranscript(transcriptPath) {
-  const result = { sessionStart: null, agents: [], todos: [] };
+  const result = {
+    sessionStart: null, agents: [], todos: [],
+    tools: { active: null, counts: {} },  // v9.10.2: Tool activity tracking
+  };
   if (!transcriptPath || !existsSync(transcriptPath)) return result;
 
   const agentMap = new Map();
@@ -495,9 +519,21 @@ async function parseTranscript(transcriptPath) {
             latestTodos = input.todos.map((t) => ({ content: t.content, status: t.status }));
           }
         }
+        // v9.10.2: Track tool activity (Read, Write, Edit, Bash, Grep, Glob)
+        const TRACKED_TOOLS = ["Read", "Write", "Edit", "Bash", "Grep", "Glob", "WebSearch", "WebFetch"];
+        if (TRACKED_TOOLS.includes(block.name)) {
+          const inp = block.input || {};
+          const target = inp.file_path?.split("/").pop() || inp.command?.substring(0, 30) || inp.pattern || inp.query || "";
+          result.tools.active = { name: block.name, target: target.substring(0, 25), id: block.id };
+          result.tools.counts[block.name] = (result.tools.counts[block.name] || 0) + 1;
+        }
       }
 
       if (block.type === "tool_result" && block.tool_use_id) {
+        // v9.10.2: Clear active tool when result arrives
+        if (result.tools.active && result.tools.active.id === block.tool_use_id) {
+          result.tools.active = null;
+        }
         const agent = agentMap.get(block.tool_use_id);
         if (agent) {
           const text = typeof block.content === "string" ? block.content : (Array.isArray(block.content) ? block.content.map(b => b.text || "").join("") : "");
@@ -770,6 +806,7 @@ function render(input, session, usage, transcript, latestVersion, config) {
       let val = `${C.cyan}\u{1F419}${C.reset}`;
       if (OCTO_VERSION) val += ` ${C.slate600}v${OCTO_VERSION}${C.reset}`;
       if (effortSymbol) val += ` ${C.slate600}${effortSymbol}${C.reset}`;
+      if (config.preset) val += ` ${C.dim}[${config.preset.substring(0, 3)}]${C.reset}`;
       return { label: lbl("Octo"), value: val };
     },
     "Model": () => ({ label: lbl("Model"), value: `${C.slate600}\u25CF ${modelId}${C.reset}` }),
@@ -929,11 +966,30 @@ function render(input, session, usage, transcript, latestVersion, config) {
     line3.push(`${C.slate800bold}Agent:${C.reset} ${C.magenta}${agentName}${C.reset}`);
   }
 
+  // v9.10.2: Enhanced todo progress — show active task text, not just count
   if (transcript.todos.length > 0) {
     const done = transcript.todos.filter((t) => t.status === "completed").length;
     const total = transcript.todos.length;
     const todoColor = done === total ? C.green : C.yellow;
-    line3.push(`${C.slate800bold}Todos:${C.reset} ${todoColor}${done}/${total}${C.reset}`);
+    const activeTodo = transcript.todos.find((t) => t.status !== "completed");
+    const todoText = activeTodo ? activeTodo.content.substring(0, 35) : "All done";
+    line3.push(`${todoColor}\u25B8${C.reset} ${C.slate600}${todoText}${C.reset} ${todoColor}(${done}/${total})${C.reset}`);
+  }
+
+  // v9.10.2: Tool activity tracking — show active + completed counts
+  const toolCounts = transcript.tools?.counts || {};
+  const activeTool = transcript.tools?.active;
+  const toolParts = [];
+  if (activeTool) {
+    toolParts.push(`${C.yellow}\u25D0${C.reset} ${C.white}${activeTool.name}${C.reset}${activeTool.target ? `: ${C.slate600}${activeTool.target}${C.reset}` : ""}`);
+  }
+  for (const [name, count] of Object.entries(toolCounts)) {
+    if (count > 0 && (!activeTool || activeTool.name !== name)) {
+      toolParts.push(`${C.green}\u2713${C.reset} ${C.dim}${name} \u00D7${count}${C.reset}`);
+    }
+  }
+  if (toolParts.length > 0) {
+    line3.push(toolParts.join(` ${C.slate800}\u2502${C.reset} `));
   }
 
   if (line3.length > 0) {
