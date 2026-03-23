@@ -11,8 +11,8 @@
     {
       "name": "octo",
       "source": "./",
-      "description": "v9.10.3 - Multi-LLM orchestration for Claude Code with Double Diamond workflows, provider routing, safety gates, and automation. 32 personas, 47 commands, 44 skills. Run /octo:setup.",
-      "version": "9.10.3",
+      "description": "v9.11.0 - OpenCode CLI provider \u2014 multi-provider router integration. 32 personas, 47 commands, 44 skills. Run /octo:setup.",
+      "version": "9.11.0",
       "author": {
         "name": "nyldn"
       },

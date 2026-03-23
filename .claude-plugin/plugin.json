@@ -1,6 +1,6 @@
 {
   "name": "octo",
-  "version": "9.10.3",
+  "version": "9.11.0",
   "description": "Multi-LLM orchestration for Claude Code with Double Diamond workflows, provider routing, safety gates, and automation. Use '/octo:auto' or just describe what you need. Run /octo:setup.",
   "author": {
     "name": "nyldn"
@@ -44,12 +44,9 @@
     "./.claude/skills/flow-deliver.md",
     "./.claude/skills/sys-configure.md",
     "./.claude/skills/skill-debate.md",
-
     "./.claude/skills/skill-code-review.md",
     "./.claude/skills/skill-architecture.md",
     "./.claude/skills/skill-security-audit.md",
-
-
     "./.claude/skills/skill-deep-research.md",
     "./.claude/skills/skill-writing-plans.md",
     "./.claude/skills/skill-tdd.md",
@@ -57,7 +54,6 @@
     "./.claude/skills/skill-doc-delivery.md",
     "./.claude/skills/skill-finish-branch.md",
     "./.claude/skills/skill-verify.md",
-
     "./.claude/skills/skill-parallel-agents.md",
     "./.claude/skills/skill-knowledge-work.md",
     "./.claude/skills/skill-task-management-v2.md",
@@ -72,7 +68,6 @@
     "./.claude/skills/skill-issues.md",
     "./.claude/skills/skill-rollback.md",
     "./.claude/skills/skill-resume.md",
-
     "./.claude/skills/skill-ship.md",
     "./.claude/skills/skill-deck.md",
     "./.claude/skills/flow-spec.md",

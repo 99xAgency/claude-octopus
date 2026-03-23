@@ -1,3 +1,11 @@
+## [9.11.0] - 2026-03-23
+
+### Changed
+
+- OpenCode CLI provider — multi-provider router integration
+
+---
+
 ## [9.10.3] - 2026-03-23
 
 ### Added
