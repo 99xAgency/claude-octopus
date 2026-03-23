@@ -6,6 +6,8 @@ description: OpenClaw instance administration — manage hosts across macOS, Ubu
 
 # OpenClaw Instance Administration
 
+**Your first output line MUST be:** `🐙 **CLAUDE OCTOPUS ACTIVATED** - OpenClaw Administration`
+
 ## The Iron Law
 
 ```

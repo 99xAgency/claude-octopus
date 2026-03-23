@@ -26,14 +26,14 @@ function textResult(text) {
 // --- Execution ---
 // Allowed autonomy values for runtime validation
 const VALID_AUTONOMY = new Set(["supervised", "semi-autonomous", "autonomous"]);
-async function executeOrchestrate(command, prompt, flags = []) {
+async function executeOrchestrate(command, prompt, flags = [], postFlags = []) {
     const orchestrateSh = resolve(PLUGIN_ROOT, "scripts/orchestrate.sh");
-    // Flags MUST come before the command per orchestrate.sh's argument parser
-    const args = [...flags, command, prompt];
+    // Global flags MUST come before the command; subcommand flags go after
+    const args = [...flags, command, ...postFlags, prompt];
     try {
         const { stdout, stderr } = await execFileAsync(orchestrateSh, args, {
             cwd: PLUGIN_ROOT,
-            timeout: 300_000,
+            timeout: 300000,
             env: {
                 // Security: only forward required env vars, not the full process.env
                 PATH: process.env.PATH,
@@ -46,6 +46,14 @@ async function executeOrchestrate(command, prompt, flags = []) {
                 GEMINI_API_KEY: process.env.GEMINI_API_KEY,
                 GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
                 OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY,
+                PERPLEXITY_API_KEY: process.env.PERPLEXITY_API_KEY,
+                // Ollama Anthropic-compatible path (ANTHROPIC_BASE_URL=http://localhost:11434)
+                ANTHROPIC_BASE_URL: process.env.ANTHROPIC_BASE_URL,
+                ANTHROPIC_AUTH_TOKEN: process.env.ANTHROPIC_AUTH_TOKEN,
+                // GitHub Copilot CLI auth (checked in precedence order by copilot CLI)
+                COPILOT_GITHUB_TOKEN: process.env.COPILOT_GITHUB_TOKEN,
+                GH_TOKEN: process.env.GH_TOKEN,
+                GITHUB_TOKEN: process.env.GITHUB_TOKEN,
                 // Octopus config
                 ...Object.fromEntries(Object.entries(process.env).filter(([k]) => k.startsWith("CLAUDE_OCTOPUS_") || k.startsWith("OCTOPUS_"))),
                 CLAUDE_OCTOPUS_MCP_MODE: "true",
@@ -86,7 +94,11 @@ const WORKFLOW_DEFS = [
             prompt: Type.String({ description: "What to implement" }),
             quality_threshold: Type.Optional(Type.Number({ description: "Minimum quality score (0-100)", default: 75 })),
         }),
-        run: async (params) => executeOrchestrate("tangle", params.prompt),
+        run: async (params) => {
+            const qt = params.quality_threshold;
+            const flags = qt !== undefined && qt !== 75 ? ["-q", `${qt}`] : [];
+            return executeOrchestrate("tangle", params.prompt, flags);
+        },
     },
     {
         name: "octopus_deliver",
@@ -122,22 +134,21 @@ const WORKFLOW_DEFS = [
     {
         name: "octopus_debate",
         label: "Octopus Debate",
-        description: "Three-way AI debate between Claude, Gemini, and Codex on any topic.",
+        description: "Four-way AI debate between Claude, Sonnet, Gemini, and Codex on any topic.",
         parameters: Type.Object({
             question: Type.String({ description: "Question to debate" }),
             rounds: Type.Optional(Type.Number({ default: 1, description: "Debate rounds" })),
-            style: Type.Optional(Type.Union([
-                Type.Literal("quick"),
-                Type.Literal("thorough"),
-                Type.Literal("adversarial"),
-                Type.Literal("collaborative"),
-            ], { default: "quick" })),
+            mode: Type.Optional(Type.Union([
+                Type.Literal("cross-critique"),
+                Type.Literal("blinded"),
+            ], { default: "cross-critique", description: "Evaluation mode: cross-critique (ACH falsification) or blinded (independent)" })),
         }),
-        run: async (params) => executeOrchestrate("grapple", params.question, [
+        // orchestrate.sh grapple parses -r/--mode AFTER the subcommand, not as global flags
+        run: async (params) => executeOrchestrate("grapple", params.question, [], [
             "-r",
             `${params.rounds ?? 1}`,
-            "-d",
-            params.style ?? "quick",
+            "--mode",
+            params.mode ?? "cross-critique",
         ]),
     },
     {

@@ -19,7 +19,7 @@ Structured four-way AI debates between Claude, Sonnet, Gemini, and Codex.
 1. Follow the `skill-debate` instructions (Steps 1-7) exactly.
 2. Start with Step 1: check provider availability and display the visual indicator banner.
 3. Step 2: ask clarifying questions via AskUserQuestion before proceeding.
-4. Steps 3-5: parse arguments, set up debate folder, conduct rounds with all three participants.
+4. Steps 3-5: parse arguments, set up debate folder, conduct rounds with all four participants (Gemini CLI, Codex CLI, Sonnet Agent, Claude/Opus).
 5. Steps 6-7: write final synthesis and present results to the user.
 6. Apply quality gates and cost tracking from `skill-debate` throughout.
 
