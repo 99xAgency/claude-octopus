@@ -1,6 +1,6 @@
 ---
 name: octo-docs-architect
-description: Technical documentation architect for comprehensive system docs and architecture guides
+description: "Technical documentation architect for comprehensive system docs and architecture guides"
 model: inherit
 ---
 

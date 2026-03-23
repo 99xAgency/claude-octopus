@@ -1,7 +1,7 @@
 ---
 name: skill-writing-plans
 version: 1.0.0
-description: Zero-context implementation plans with bite-sized tasks. Use when: Use when you have a spec or requirements for a multi-step task.. Auto-invoke when user says "plan how to implement X", "create implementation plan", . "break down this feature into tasks".
+description: "Zero-context implementation plans with bite-sized tasks. Use when: Use when you have a spec or requirements for a multi-step task.. Auto-invoke when user says \"plan how to implement X\", \"create implementation plan\", . \"break down this feature into tasks\"."
 ---
 
 # Writing Plans

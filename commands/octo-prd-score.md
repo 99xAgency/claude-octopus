@@ -1,5 +1,5 @@
 ---
-description: Score an existing PRD against the 100-point AI-optimization framework
+description: "Score an existing PRD against the 100-point AI-optimization framework"
 ---
 
 ## STOP - DO NOT INVOKE /skill OR Skill() AGAIN

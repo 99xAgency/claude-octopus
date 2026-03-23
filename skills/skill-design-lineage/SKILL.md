@@ -1,7 +1,7 @@
 ---
 name: skill-design-lineage
 version: 1.0.0
-description: Persist design documents with branch tracking, revision chains, and cross-session discovery. Use when: AUTOMATICALLY ACTIVATE when user says:. "save design" or "save this design". "design document" or "create a design doc"
+description: "Persist design documents with branch tracking, revision chains, and cross-session discovery. Use when: AUTOMATICALLY ACTIVATE when user says:. \"save design\" or \"save this design\". \"design document\" or \"create a design doc\""
 ---
 
 # Design Document Lineage

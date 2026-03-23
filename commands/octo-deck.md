@@ -1,5 +1,5 @@
 ---
-description: Generate slide deck presentations from briefs or research
+description: "Generate slide deck presentations from briefs or research"
 ---
 
 # Deck - Slide Deck Generator

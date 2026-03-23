@@ -1,6 +1,6 @@
 ---
 name: octo-code-reviewer
-description: Code review expert for quality analysis, security vulnerabilities, and production reliability
+description: "Code review expert for quality analysis, security vulnerabilities, and production reliability"
 model: opus
 ---
 

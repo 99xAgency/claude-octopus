@@ -1,6 +1,6 @@
 ---
 name: octo-debugger
-description: Debugging specialist for errors, test failures, and unexpected behavior
+description: "Debugging specialist for errors, test failures, and unexpected behavior"
 model: opus
 ---
 

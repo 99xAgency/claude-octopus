@@ -1,5 +1,5 @@
 ---
-description: Quick execution mode for ad-hoc tasks without full workflow overhead
+description: "Quick execution mode for ad-hoc tasks without full workflow overhead"
 ---
 
 # Quick Mode Command

@@ -1,5 +1,5 @@
 ---
-description: "Manage scheduled workflow jobs (add via wizard, dashboard, list, remove, enable, disable, logs)"
+description: "\"Manage scheduled workflow jobs (add via wizard, dashboard, list, remove, enable, disable, logs)\""
 ---
 
 # Schedule

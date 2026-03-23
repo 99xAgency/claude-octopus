@@ -1,5 +1,5 @@
 ---
-description: GitHub-aware work monitor - triages issues, PRs, and CI failures
+description: "GitHub-aware work monitor - triages issues, PRs, and CI failures"
 ---
 
 # Sentinel (/octo:sentinel)

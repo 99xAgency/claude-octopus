@@ -1,7 +1,7 @@
 ---
 name: skill-cost-projections
 version: 1.0.0
-description: Project remaining workflow cost from per-phase averages — warns on budget ceiling overruns. Use when: AUTOMATICALLY ACTIVATE when user asks about workflow costs:. "cost projection", "estimate remaining cost". "budget forecast", "how much will this cost"
+description: "Project remaining workflow cost from per-phase averages — warns on budget ceiling overruns. Use when: AUTOMATICALLY ACTIVATE when user asks about workflow costs:. \"cost projection\", \"estimate remaining cost\". \"budget forecast\", \"how much will this cost\""
 ---
 
 # Cost Projections Skill

@@ -1,5 +1,5 @@
 ---
-description: Smart router - Single entry point with natural language intent detection
+description: "Smart router - Single entry point with natural language intent detection"
 ---
 
 # Smart Router (/octo:auto)

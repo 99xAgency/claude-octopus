@@ -1,7 +1,7 @@
 ---
 name: skill-coverage-audit
 version: 1.0.0
-description: Trace codepaths in diffs, map against tests, auto-generate missing coverage. Use when: AUTOMATICALLY ACTIVATE when user requests coverage analysis:. "check test coverage" or "coverage audit". "what's not tested" or "find untested code"
+description: "Trace codepaths in diffs, map against tests, auto-generate missing coverage. Use when: AUTOMATICALLY ACTIVATE when user requests coverage analysis:. \"check test coverage\" or \"coverage audit\". \"what's not tested\" or \"find untested code\""
 ---
 
 # Test Coverage Audit

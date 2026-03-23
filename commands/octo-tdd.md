@@ -1,5 +1,5 @@
 ---
-description: Test-driven development with red-green-refactor discipline
+description: "Test-driven development with red-green-refactor discipline"
 ---
 
 # TDD - Test-Driven Development Skill

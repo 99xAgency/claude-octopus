@@ -1,7 +1,7 @@
 ---
 name: flow-deliver
 version: 1.0.0
-description: Multi-AI validation, scoring, and review using Codex and Gemini CLIs (Double Diamond Deliver phase). Use when: AUTOMATICALLY ACTIVATE when user requests validation, scoring, or review:. "review X" or "validate Y" or "test Z". "score this", "quality check", "validate before shipping"
+description: "Multi-AI validation, scoring, and review using Codex and Gemini CLIs (Double Diamond Deliver phase). Use when: AUTOMATICALLY ACTIVATE when user requests validation, scoring, or review:. \"review X\" or \"validate Y\" or \"test Z\". \"score this\", \"quality check\", \"validate before shipping\""
 ---
 
 > This file is generated from a template. Edit the `.tmpl` file, not this file directly.

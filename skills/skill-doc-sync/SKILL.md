@@ -1,7 +1,7 @@
 ---
 name: skill-doc-sync
 version: 1.0.0
-description: Post-ship doc sync across project markdown. Use when: "sync docs", "update docs", "document changes", "release notes".
+description: "Post-ship doc sync across project markdown. Use when: \"sync docs\", \"update docs\", \"document changes\", \"release notes\"."
 ---
 
 # Post-Ship Documentation Synchronization

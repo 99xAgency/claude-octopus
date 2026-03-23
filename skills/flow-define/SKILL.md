@@ -1,7 +1,7 @@
 ---
 name: flow-define
 version: 1.0.0
-description: Multi-AI requirements scoping using Codex and Gemini CLIs (Double Diamond Define phase). Use when: AUTOMATICALLY ACTIVATE when user requests clarification or scoping:. "define the requirements for X". "clarify the scope of Y"
+description: "Multi-AI requirements scoping using Codex and Gemini CLIs (Double Diamond Define phase). Use when: AUTOMATICALLY ACTIVATE when user requests clarification or scoping:. \"define the requirements for X\". \"clarify the scope of Y\""
 ---
 
 > This file is generated from a template. Edit the `.tmpl` file, not this file directly.

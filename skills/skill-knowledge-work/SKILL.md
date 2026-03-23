@@ -1,7 +1,7 @@
 ---
 name: skill-knowledge-work
 version: 1.0.0
-description: Switch to Knowledge Work mode for research and writing — use when task is non-code focused
+description: "Switch to Knowledge Work mode for research and writing — use when task is non-code focused"
 ---
 
 # Knowledge Work Mode - Context Override Skill

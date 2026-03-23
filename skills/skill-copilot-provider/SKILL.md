@@ -1,7 +1,7 @@
 ---
 name: skill-copilot-provider
 version: 1.0.0
-description: GitHub Copilot CLI as optional zero-cost provider via copilot -p programmatic mode. Use when: AUTOMATICALLY ACTIVATE when user says:. "copilot provider" or "add copilot" or "github copilot" or "use copilot"
+description: "GitHub Copilot CLI as optional zero-cost provider via copilot -p programmatic mode. Use when: AUTOMATICALLY ACTIVATE when user says:. \"copilot provider\" or \"add copilot\" or \"github copilot\" or \"use copilot\""
 ---
 
 # GitHub Copilot Provider Skill

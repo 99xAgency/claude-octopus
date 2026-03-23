@@ -1,5 +1,5 @@
 ---
-description: Check Claude Octopus setup status and get configuration instructions
+description: "Check Claude Octopus setup status and get configuration instructions"
 ---
 
 # Claude Octopus Setup

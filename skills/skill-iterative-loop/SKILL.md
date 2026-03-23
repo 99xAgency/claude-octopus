@@ -1,7 +1,7 @@
 ---
 name: skill-iterative-loop
 version: 1.0.0
-description: Run tasks in a loop until goals are met — use for iterative refinement, polling, or convergence. Use when: AUTOMATICALLY ACTIVATE when user requests iterative execution:. "loop X times" or "loop around N times". "loop around 5 times auditing, enhancing, testing"
+description: "Run tasks in a loop until goals are met — use for iterative refinement, polling, or convergence. Use when: AUTOMATICALLY ACTIVATE when user requests iterative execution:. \"loop X times\" or \"loop around N times\". \"loop around 5 times auditing, enhancing, testing\""
 ---
 
 # Iterative Loop Execution

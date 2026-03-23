@@ -1,5 +1,5 @@
 ---
-description: Deep research with multi-source synthesis and comprehensive analysis
+description: "Deep research with multi-source synthesis and comprehensive analysis"
 ---
 
 # Research - Deep Multi-AI Research

@@ -1,5 +1,5 @@
 ---
-description: "AI Debate Hub - Structured four-way debates between Claude, Sonnet, Gemini, and Codex"
+description: "\"AI Debate Hub - Structured four-way debates between Claude, Sonnet, Gemini, and Codex\""
 ---
 
 # Debate

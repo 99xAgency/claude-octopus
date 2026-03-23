@@ -1,5 +1,5 @@
 ---
-description: Security audit with OWASP compliance and vulnerability detection
+description: "Security audit with OWASP compliance and vulnerability detection"
 ---
 
 # Security - Security Audit Skill

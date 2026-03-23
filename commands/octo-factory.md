@@ -1,5 +1,5 @@
 ---
-description: "Dark Factory Mode - Spec-in, software-out autonomous pipeline"
+description: "\"Dark Factory Mode - Spec-in, software-out autonomous pipeline\""
 ---
 
 # Factory - Dark Factory Mode (v8.25.0)

@@ -1,5 +1,5 @@
 ---
-description: "Design System & Product Reverse-Engineering - Extract tokens, components, architecture, and PRDs from codebases or live products"
+description: "\"Design System & Product Reverse-Engineering - Extract tokens, components, architecture, and PRDs from codebases or live products\""
 ---
 
 # /octo:extract - Design System & Product Reverse-Engineering

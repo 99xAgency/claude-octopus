@@ -1,7 +1,7 @@
 ---
 name: flow-develop
 version: 1.0.0
-description: Multi-AI implementation using Codex and Gemini CLIs (Double Diamond Develop phase). Use when: AUTOMATICALLY ACTIVATE when user requests building or implementation:. "build X" or "implement Y" or "create Z". "develop a feature for X"
+description: "Multi-AI implementation using Codex and Gemini CLIs (Double Diamond Develop phase). Use when: AUTOMATICALLY ACTIVATE when user requests building or implementation:. \"build X\" or \"implement Y\" or \"create Z\". \"develop a feature for X\""
 ---
 
 > This file is generated from a template. Edit the `.tmpl` file, not this file directly.

@@ -1,7 +1,7 @@
 ---
 name: skill-context-detection
 version: 1.0.0
-description: Auto-detect work context (Dev vs Knowledge) for workflow tailoring
+description: "Auto-detect work context (Dev vs Knowledge) for workflow tailoring"
 ---
 
 # Context Detection - Internal Skill

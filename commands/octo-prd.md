@@ -1,5 +1,5 @@
 ---
-description: Write an AI-optimized PRD using multi-AI orchestration and 100-point scoring framework
+description: "Write an AI-optimized PRD using multi-AI orchestration and 100-point scoring framework"
 ---
 
 ## STOP - DO NOT INVOKE /skill OR Skill() AGAIN

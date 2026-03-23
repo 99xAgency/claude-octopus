@@ -26,6 +26,12 @@ Thanks for your interest in contributing to Claude Octopus! This document provid
 ### Validate Your Changes
 
 ```bash
+# Regenerate shipped plugin artifacts
+bash scripts/build-factory-skills.sh
+
+# Validate plugin against the local Claude CLI
+claude plugin validate .claude-plugin/plugin.json
+
 # Check shell script syntax
 bash -n scripts/orchestrate.sh
 bash -n scripts/lib/*.sh
@@ -84,7 +90,7 @@ Types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`
 
 - [ ] Shell scripts pass `bash -n` check
 - [ ] Tests pass: `bash tests/run-pre-push.sh`
-- [ ] New skills/commands registered in `.claude-plugin/plugin.json`
+- [ ] Generated plugin-root skills/commands refreshed and `claude plugin validate .claude-plugin/plugin.json` passes
 - [ ] Documentation updated (if applicable)
 - [ ] CHANGELOG.md updated (for features/fixes)
 - [ ] Commit messages follow conventions

@@ -1,7 +1,7 @@
 ---
 name: skill-code-review
 version: 1.0.0
-description: Expert multi-AI code review with quality and security analysis
+description: "Expert multi-AI code review with quality and security analysis"
 ---
 
 # Code Review Skill

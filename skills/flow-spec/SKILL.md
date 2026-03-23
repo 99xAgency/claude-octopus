@@ -1,7 +1,7 @@
 ---
 name: flow-spec
 version: 1.0.0
-description: NLSpec authoring — structured specification from multi-AI research
+description: "NLSpec authoring — structured specification from multi-AI research"
 ---
 
 # STOP - SKILL ALREADY LOADED

@@ -1,5 +1,5 @@
 ---
-description: Resume a previous agent by ID — continue an interrupted task where it left off
+description: "Resume a previous agent by ID — continue an interrupted task where it left off"
 ---
 
 # /octo:resume — Agent Resume

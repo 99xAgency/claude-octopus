@@ -1,7 +1,7 @@
 ---
 name: skill-prd
 version: 1.0.0
-description: AI-optimized PRD creation with 100-point scoring framework
+description: "AI-optimized PRD creation with 100-point scoring framework"
 ---
 
 # STOP - SKILL ALREADY LOADED

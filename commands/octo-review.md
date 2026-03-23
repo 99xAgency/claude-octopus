@@ -1,5 +1,5 @@
 ---
-description: Expert multi-LLM code review with inline PR comments — competes with CC Code Review
+description: "Expert multi-LLM code review with inline PR comments — competes with CC Code Review"
 ---
 
 # /octo:review

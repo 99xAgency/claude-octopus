@@ -1,5 +1,5 @@
 ---
-description: Environment diagnostics — check providers, auth, config, hooks, scheduler, and more
+description: "Environment diagnostics — check providers, auth, config, hooks, scheduler, and more"
 ---
 
 # Doctor - Environment Diagnostics

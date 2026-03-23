@@ -1,7 +1,7 @@
 ---
 name: skill-tdd
 version: 1.0.0
-description: Build features with tests-before-code rigor — use for new features needing test coverage. Use when: Use when implementing any feature, bugfix, or behavior change.. Auto-invoke when user says "implement X", "add feature Y", "fix bug Z".
+description: "Build features with tests-before-code rigor — use for new features needing test coverage. Use when: Use when implementing any feature, bugfix, or behavior change.. Auto-invoke when user says \"implement X\", \"add feature Y\", \"fix bug Z\"."
 ---
 
 # Test-Driven Development (TDD)

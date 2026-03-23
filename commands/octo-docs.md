@@ -1,5 +1,5 @@
 ---
-description: Document delivery with export to PPTX, DOCX, PDF formats
+description: "Document delivery with export to PPTX, DOCX, PDF formats"
 ---
 
 # Docs - Document Delivery Skill

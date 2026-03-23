@@ -14,9 +14,11 @@ ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 CHECK_ONLY=false
 [[ "${1:-}" == "--check" ]] && CHECK_ONLY=true
 
-# Count actual files
-SKILL_COUNT=$(find "$ROOT_DIR/.claude/skills" -name "*.md" -type f 2>/dev/null | wc -l | tr -d ' ')
-COMMAND_COUNT=$(find "$ROOT_DIR/.claude/commands" -name "*.md" -type f 2>/dev/null | wc -l | tr -d ' ')
+# Count shipped plugin artifacts from the plugin root.
+# Skills are generated from .claude/skills, but human_only entries are excluded
+# from the published plugin surface.
+SKILL_COUNT=$(find "$ROOT_DIR/skills" -mindepth 2 -maxdepth 2 -name "SKILL.md" -type f 2>/dev/null | wc -l | tr -d ' ')
+COMMAND_COUNT=$(find "$ROOT_DIR/commands" -maxdepth 1 -name "*.md" -type f 2>/dev/null | wc -l | tr -d ' ')
 PERSONA_COUNT=$(find "$ROOT_DIR/agents/personas" -name "*.md" -type f 2>/dev/null | wc -l | tr -d ' ')
 
 # Get current version from plugin.json (source of truth)

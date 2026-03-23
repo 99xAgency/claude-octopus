@@ -1,5 +1,5 @@
 ---
-description: Systematic debugging with methodical problem investigation
+description: "Systematic debugging with methodical problem investigation"
 ---
 
 # Debug - Systematic Debugging Skill

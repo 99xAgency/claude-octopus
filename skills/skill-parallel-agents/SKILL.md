@@ -1,7 +1,7 @@
 ---
 name: skill-parallel-agents
 version: 1.0.0
-description: Multi-tentacled orchestration using Double Diamond methodology. Use when: PRIORITY TRIGGERS (always invoke immediately):. "/octo:multi" (explicit command). "run this with all providers", "run with all providers"
+description: "Multi-tentacled orchestration using Double Diamond methodology. Use when: PRIORITY TRIGGERS (always invoke immediately):. \"/octo:multi\" (explicit command). \"run this with all providers\", \"run with all providers\""
 ---
 
 # Claude Octopus - Multi-Tentacled Orchestrator

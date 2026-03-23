@@ -1,5 +1,5 @@
 ---
-description: Remove freeze mode edit restriction
+description: "Remove freeze mode edit restriction"
 ---
 
 # Unfreeze - Remove Edit Boundary

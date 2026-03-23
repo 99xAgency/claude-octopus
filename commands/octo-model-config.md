@@ -1,5 +1,5 @@
 ---
-description: Configure AI provider models for Claude Octopus workflows
+description: "Configure AI provider models for Claude Octopus workflows"
 ---
 
 # Model Configuration

@@ -1,7 +1,7 @@
 ---
 name: skill-intent-contract
 version: 1.0.0
-description: Lock in user goals upfront and validate outputs against them — use to prevent scope drift
+description: "Lock in user goals upfront and validate outputs against them — use to prevent scope drift"
 ---
 
 # Intent Contract System
