@@ -5,17 +5,38 @@ description: Expert multi-LLM code review with inline PR comments — competes w
 
 # /octo:review
 
+When the user invokes this command (e.g., `/octo:review <arguments>`):
+
+**MANDATORY: Before displaying the banner or starting the review, use the Bash tool to check provider availability:**
+
+```bash
+echo "PROVIDER_CHECK_START"
+printf "codex:%s\n" "$(command -v codex >/dev/null 2>&1 && echo available || echo missing)"
+printf "gemini:%s\n" "$(command -v gemini >/dev/null 2>&1 && echo available || echo missing)"
+printf "perplexity:%s\n" "$([ -n "${PERPLEXITY_API_KEY:-}" ] && echo available || echo missing)"
+printf "opencode:%s\n" "$(command -v opencode >/dev/null 2>&1 && echo available || echo missing)"
+printf "copilot:%s\n" "$(command -v copilot >/dev/null 2>&1 && echo available || echo missing)"
+printf "qwen:%s\n" "$(command -v qwen >/dev/null 2>&1 && echo available || echo missing)"
+printf "ollama:%s\n" "$(command -v ollama >/dev/null 2>&1 && curl -sf http://localhost:11434/api/tags >/dev/null 2>&1 && echo available || echo missing)"
+printf "openrouter:%s\n" "$([ -n "${OPENROUTER_API_KEY:-}" ] && echo available || echo missing)"
+echo "PROVIDER_CHECK_END"
+```
+
+Then display the banner with ACTUAL results:
+
+```
 🐙 **CLAUDE OCTOPUS ACTIVATED** — Multi-LLM Code Review
 
 Providers:
-🔴 Codex CLI — logic and correctness
-🟡 Gemini CLI — security and edge cases
-🔵 Claude — architecture and synthesis
-🟣 Perplexity — CVE lookup (if available)
+🔴 Codex CLI: [Available ✓ / Not installed ✗] — logic and correctness
+🟡 Gemini CLI: [Available ✓ / Not installed ✗] — security and edge cases
+🔵 Claude: Available ✓ — architecture and synthesis
+🟣 Perplexity: [Available ✓ / Not configured ✗] — CVE lookup
+```
+
+**PROHIBITED: Displaying only "🔵 Claude: Available ✓" without checking and listing other providers.**
 
 ---
-
-When the user invokes this command (e.g., `/octo:review <arguments>`):
 
 ## Step 1: Ask Clarifying Questions / Context Acquisition
 

@@ -91,15 +91,23 @@ AskUserQuestion({
 
 ### Step 2: Check Provider Availability & Display Banner
 
-**Check which AI providers are available and display the visual indicator banner:**
+**MANDATORY: You MUST use the Bash tool to run this exact command BEFORE displaying the banner. Do NOT skip this check. Do NOT assume provider availability.**
 
-First, check availability:
 ```bash
-codex_available=$(command -v codex &> /dev/null && echo "✓" || echo "✗ Not installed")
-gemini_available=$(command -v gemini &> /dev/null && echo "✓" || echo "✗ Not installed")
+echo "PROVIDER_CHECK_START"
+printf "codex:%s\n" "$(command -v codex >/dev/null 2>&1 && echo available || echo missing)"
+printf "gemini:%s\n" "$(command -v gemini >/dev/null 2>&1 && echo available || echo missing)"
+printf "perplexity:%s\n" "$([ -n "${PERPLEXITY_API_KEY:-}" ] && echo available || echo missing)"
+printf "opencode:%s\n" "$(command -v opencode >/dev/null 2>&1 && echo available || echo missing)"
+printf "copilot:%s\n" "$(command -v copilot >/dev/null 2>&1 && echo available || echo missing)"
+printf "qwen:%s\n" "$(command -v qwen >/dev/null 2>&1 && echo available || echo missing)"
+printf "ollama:%s\n" "$(command -v ollama >/dev/null 2>&1 && curl -sf http://localhost:11434/api/tags >/dev/null 2>&1 && echo available || echo missing)"
+printf "openrouter:%s\n" "$([ -n "${OPENROUTER_API_KEY:-}" ] && echo available || echo missing)"
+echo "PROVIDER_CHECK_END"
 ```
 
-Then output the banner:
+**After running the check**, display the banner with ACTUAL results. You MUST list ALL providers — do NOT omit providers from the banner:
+
 ```
 🐙 **CLAUDE OCTOPUS ACTIVATED** - Full Double Diamond Workflow
 🐙 Embrace: [Brief description of what's being built]
@@ -111,9 +119,10 @@ All Phases:
 ✅ Deliver - Final validation and review
 
 Provider Availability:
-🔴 Codex CLI: [Available ✓ / Not installed ✗]
-🟡 Gemini CLI: [Available ✓ / Not installed ✗]
-🟣 Perplexity: [Available ✓ / Not configured ✗]
+🔴 Codex CLI: [Available ✓ / Not installed ✗] — based on bash check
+🟡 Gemini CLI: [Available ✓ / Not installed ✗] — based on bash check
+🟣 Perplexity: [Available ✓ / Not configured ✗] — based on bash check
+🟤 OpenCode: [Available ✓ / Not installed ✗] — based on bash check
 🔵 Claude: Available ✓
 
 Project Context:
@@ -121,6 +130,8 @@ Scope: [User's scope answer]
 Focus: [User's focus areas]
 Autonomy: [User's autonomy preference]
 ```
+
+**PROHIBITED: Displaying only "🔵 Claude: Available ✓" without checking and listing the other providers. Every provider MUST appear in the banner with its actual status.**
 
 **If providers are missing:**
 - Note in the banner which providers are unavailable

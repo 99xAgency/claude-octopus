@@ -187,8 +187,15 @@ For each issue found, state: what's wrong, why it matters, and what to do instea
 
 ```bash
 # Check provider availability
-codex_available=$(command -v codex &> /dev/null && echo "true" || echo "false")
-gemini_available=$(command -v gemini &> /dev/null && echo "true" || echo "false")
+codex_available="false"
+if command -v codex >/dev/null 2>&1; then
+    codex_available="true"
+fi
+
+gemini_available="false"
+if command -v gemini >/dev/null 2>&1; then
+    gemini_available="true"
+fi
 
 # 🔴 Codex — implementation-focused critique (font loading, CSS practicality, bundle impact)
 if [[ "$codex_available" == "true" ]]; then

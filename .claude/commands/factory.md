@@ -27,25 +27,48 @@ After receiving answers: validate spec path exists, set overrides, proceed.
 
 Check via bash:
 ```bash
-codex_available=$(command -v codex &> /dev/null && echo "Available" || echo "Not installed")
-gemini_available=$(command -v gemini &> /dev/null && echo "Available" || echo "Not installed")
+codex_available="Not installed"
+if command -v codex >/dev/null 2>&1; then
+  codex_available="Available"
+fi
+
+gemini_available="Not installed"
+if command -v gemini >/dev/null 2>&1; then
+  gemini_available="Available"
+fi
 ```
 
-Display the factory banner:
+**MANDATORY: Check provider availability before displaying the banner:**
+
+```bash
+echo "PROVIDER_CHECK_START"
+printf "codex:%s\n" "$(command -v codex >/dev/null 2>&1 && echo available || echo missing)"
+printf "gemini:%s\n" "$(command -v gemini >/dev/null 2>&1 && echo available || echo missing)"
+printf "perplexity:%s\n" "$([ -n "${PERPLEXITY_API_KEY:-}" ] && echo available || echo missing)"
+printf "opencode:%s\n" "$(command -v opencode >/dev/null 2>&1 && echo available || echo missing)"
+printf "copilot:%s\n" "$(command -v copilot >/dev/null 2>&1 && echo available || echo missing)"
+printf "qwen:%s\n" "$(command -v qwen >/dev/null 2>&1 && echo available || echo missing)"
+printf "ollama:%s\n" "$(command -v ollama >/dev/null 2>&1 && curl -sf http://localhost:11434/api/tags >/dev/null 2>&1 && echo available || echo missing)"
+printf "openrouter:%s\n" "$([ -n "${OPENROUTER_API_KEY:-}" ] && echo available || echo missing)"
+echo "PROVIDER_CHECK_END"
+```
+
+Display the factory banner with ACTUAL results:
 
 ```
 CLAUDE OCTOPUS ACTIVATED - Dark Factory Mode
 Pipeline: Parse → Scenarios → Embrace → Holdout → Score → Report
 
 Providers:
-  Codex CLI - Scenario generation + holdout evaluation
-  Gemini CLI - Cross-provider diversity + blind review
-  Claude - Orchestration, synthesis, satisfaction scoring
+  🔴 Codex CLI: [Available ✓ / Not installed ✗] - Scenario generation + holdout evaluation
+  🟡 Gemini CLI: [Available ✓ / Not installed ✗] - Cross-provider diversity + blind review
+  🔵 Claude: Available ✓ - Orchestration, synthesis, satisfaction scoring
 
 Spec: <spec-path>
 Estimated cost: $0.50-2.00 (~20-30 agent calls)
 ```
 
+**PROHIBITED: Displaying only Claude without listing all providers.**
 If both external providers are missing, warn but proceed (Claude-only mode is supported).
 
 ### Step 3: Validate Spec

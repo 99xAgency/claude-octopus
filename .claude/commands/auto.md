@@ -159,17 +159,35 @@ Quick:
 
 ### STEP 6: Display Visual Indicators
 
-For multi-AI workflows, display before executing:
+**MANDATORY: For multi-AI workflows, you MUST use the Bash tool to check provider availability BEFORE displaying the banner:**
+
+```bash
+echo "PROVIDER_CHECK_START"
+printf "codex:%s\n" "$(command -v codex >/dev/null 2>&1 && echo available || echo missing)"
+printf "gemini:%s\n" "$(command -v gemini >/dev/null 2>&1 && echo available || echo missing)"
+printf "perplexity:%s\n" "$([ -n "${PERPLEXITY_API_KEY:-}" ] && echo available || echo missing)"
+printf "opencode:%s\n" "$(command -v opencode >/dev/null 2>&1 && echo available || echo missing)"
+printf "copilot:%s\n" "$(command -v copilot >/dev/null 2>&1 && echo available || echo missing)"
+printf "qwen:%s\n" "$(command -v qwen >/dev/null 2>&1 && echo available || echo missing)"
+printf "ollama:%s\n" "$(command -v ollama >/dev/null 2>&1 && curl -sf http://localhost:11434/api/tags >/dev/null 2>&1 && echo available || echo missing)"
+printf "openrouter:%s\n" "$([ -n "${OPENROUTER_API_KEY:-}" ] && echo available || echo missing)"
+echo "PROVIDER_CHECK_END"
+```
+
+Then display the banner with ACTUAL results — list ALL providers with their real status:
 
 ```
 🐙 **CLAUDE OCTOPUS ACTIVATED** - [Workflow Type]
 [Phase Emoji] [Phase Name]: [Brief description]
 
 Providers:
-🔴 Codex CLI - [role in this workflow]
-🟡 Gemini CLI - [role in this workflow]
-🔵 Claude - [your role]
+🔴 Codex CLI: [Available ✓ / Not installed ✗] - [role in this workflow]
+🟡 Gemini CLI: [Available ✓ / Not installed ✗] - [role in this workflow]
+🟤 OpenCode: [Available ✓ / Not installed ✗] - [role in this workflow]
+🔵 Claude: Available ✓ - [your role]
 ```
+
+**PROHIBITED: Displaying only "🔵 Claude: Available ✓" without checking and listing other providers.**
 
 ### STEP 7: Record Routing Decision
 

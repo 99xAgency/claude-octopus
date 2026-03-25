@@ -74,10 +74,10 @@ for tmpl_name in flow-discover.tmpl flow-define.tmpl flow-develop.tmpl flow-deli
         fail "$tmpl_name has PREAMBLE placeholder" "missing {{PREAMBLE}}"
     fi
 
-    if grep -q '{{PROVIDER_SETUP}}' "$tmpl_file" 2>/dev/null; then
-        pass "$tmpl_name has PROVIDER_SETUP placeholder"
+    if grep -q 'PROVIDER_CHECK_START' "$tmpl_file" 2>/dev/null; then
+        pass "$tmpl_name has provider check bash snippet"
     else
-        fail "$tmpl_name has PROVIDER_SETUP placeholder" "missing {{PROVIDER_SETUP}}"
+        fail "$tmpl_name has provider check bash snippet" "missing PROVIDER_CHECK_START"
     fi
 
     if grep -q '{{VISUAL_INDICATORS}}' "$tmpl_file" 2>/dev/null; then

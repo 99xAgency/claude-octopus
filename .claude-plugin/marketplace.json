@@ -4,8 +4,8 @@
     "name": "nyldn"
   },
   "metadata": {
-    "description": "Multi-tentacled orchestration plugin for Claude Code",
-    "version": "9.10.3"
+    "description": "v9.11.0 — Multi-tentacled orchestration plugin for Claude Code",
+    "version": "9.11.0"
   },
   "plugins": [
     {

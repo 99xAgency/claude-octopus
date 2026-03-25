@@ -91,8 +91,15 @@ AskUserQuestion({
 
 First, check availability:
 ```bash
-codex_available=$(command -v codex &> /dev/null && echo "✓" || echo "✗ Not installed")
-gemini_available=$(command -v gemini &> /dev/null && echo "✓" || echo "✗ Not installed")
+codex_available="✗ Not installed"
+if command -v codex >/dev/null 2>&1; then
+  codex_available="✓"
+fi
+
+gemini_available="✗ Not installed"
+if command -v gemini >/dev/null 2>&1; then
+  gemini_available="✓"
+fi
 ```
 
 Then output the banner:

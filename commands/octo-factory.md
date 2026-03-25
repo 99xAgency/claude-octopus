@@ -23,8 +23,15 @@ After receiving answers: validate spec path exists, set overrides, proceed.
 
 Check via bash:
 ```bash
-codex_available=$(command -v codex &> /dev/null && echo "Available" || echo "Not installed")
-gemini_available=$(command -v gemini &> /dev/null && echo "Available" || echo "Not installed")
+codex_available="Not installed"
+if command -v codex >/dev/null 2>&1; then
+  codex_available="Available"
+fi
+
+gemini_available="Not installed"
+if command -v gemini >/dev/null 2>&1; then
+  gemini_available="Available"
+fi
 ```
 
 Display the factory banner:

@@ -36,8 +36,15 @@ To make this PRD highly targeted, please answer briefly:
 
 ```bash
 # Check if multi-provider research is available
-CODEX_AVAILABLE=$(command -v codex &>/dev/null && echo "true" || echo "false")
-GEMINI_AVAILABLE=$(command -v gemini &>/dev/null && echo "true" || echo "false")
+CODEX_AVAILABLE="false"
+if command -v codex >/dev/null 2>&1; then
+  CODEX_AVAILABLE="true"
+fi
+
+GEMINI_AVAILABLE="false"
+if command -v gemini >/dev/null 2>&1; then
+  GEMINI_AVAILABLE="true"
+fi
 ```
 
 **If multiple providers are available**, dispatch parallel research for richer context:
