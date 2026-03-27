@@ -11,7 +11,7 @@
     {
       "name": "octo",
       "source": "./",
-      "description": "v9.15.0 - Token optimization — RTK companion detection, cache-aligned prompts, anomaly-preserving truncation. 32 personas, 47 commands, 44 skills. Run /octo:setup.",
+      "description": "v9.15.0 - Token optimization — RTK companion detection, cache-aligned prompts, anomaly-preserving truncation. 32 personas, 46 commands, 50 skills. Run /octo:setup.",
       "version": "9.15.0",
       "author": {
         "name": "nyldn"
