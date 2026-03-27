@@ -4,14 +4,14 @@
     "name": "nyldn"
   },
   "metadata": {
-    "description": "v9.15.1 \u2014 Multi-tentacled orchestration plugin for Claude Code",
+    "description": "v9.15.1 — Multi-tentacled orchestration plugin for Claude Code",
     "version": "9.15.1"
   },
   "plugins": [
     {
       "name": "octo",
       "source": "./",
-      "description": "v9.15.1 - Token optimization \u2014 RTK companion detection, cache-aligned prompts, anomaly-preserving truncation. 32 personas, 47 commands, 44 skills. Run /octo:setup.",
+      "description": "v9.15.1 - Provider dispatch reliability — pipefail, stdin flags, Gemini noise filter, error classification. 32 personas, 46 commands, 50 skills. Run /octo:setup.",
       "version": "9.15.1",
       "author": {
         "name": "nyldn"

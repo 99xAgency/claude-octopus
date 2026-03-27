@@ -448,6 +448,7 @@ ${heuristic_ctx}"
     (
         cd "$PROJECT_ROOT" || exit 1
         set -f  # Disable glob expansion
+        set -o pipefail  # v9.15.1: Pipeline exit code = first failure (prevents silent codex/gemini errors)
 
         echo "# Agent: $agent_type" > "$result_file"
         echo "# Task ID: $task_id" >> "$result_file"
@@ -583,8 +584,17 @@ ${heuristic_ctx}"
                     in_response { print; }
                 ' "$temp_output" >> "$result_file"
             else
-                # Clean stdout (e.g. codex exec) — pass through directly
-                cat "$temp_output" >> "$result_file"
+                # Clean stdout (e.g. codex exec) — pass through with noise filtering
+                # v9.15.1: Filter Gemini MCP status messages and CLI preamble from stdout
+                grep -v \
+                    -e '^MCP issues detected' \
+                    -e '^Loading extension:' \
+                    -e '^YOLO mode is enabled' \
+                    -e '^Keychain initialization' \
+                    -e '^Using FileKeychain' \
+                    -e '^Loaded cached credentials' \
+                    -e '^Run /mcp' \
+                    "$temp_output" >> "$result_file" 2>/dev/null || cat "$temp_output" >> "$result_file"
             fi
 
             # v8.7.0: Add trust marker for external CLI output

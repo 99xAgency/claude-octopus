@@ -46,6 +46,9 @@ classify_error() {
         *billing*|*quota*exceeded*)      echo "permanent"; return 0 ;;
         *bad*request*|*not*found*)       echo "permanent"; return 0 ;;
         *model*not*found*)               echo "permanent"; return 0 ;;
+        *permission*denied*|*eacces*)    echo "transient"; return 0 ;;  # v9.15.1: file system permission errors (codex skills dir)
+        *cannot*find*module*)            echo "transient"; return 0 ;;  # v9.15.1: node module resolution errors (gemini keytar)
+        *mcp*issues*detected*)           echo "transient"; return 0 ;;  # v9.15.1: gemini MCP extension errors
     esac
 
     echo "unknown"
