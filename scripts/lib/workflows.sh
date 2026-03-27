@@ -42,6 +42,13 @@ probe_single_agent() {
         curated_name_early=$(select_curated_agent "$perspective" "$phase") || true
     fi
 
+    # ═══════════════════════════════════════════════════════════════════════════
+    # Cache-aligned prompt structure: stable prefix first, variable suffix last
+    # This enables Claude's cached-token discount on repeated prefix content
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    # ── STABLE PREFIX ─────────────────────────────────────────────────────────
+
     # Apply persona to prompt
     local enhanced_prompt
     enhanced_prompt=$(apply_persona "$role" "$perspective" "false" "${curated_name_early:-}")
@@ -63,10 +70,13 @@ ${enhanced_prompt}"
         fi
     fi
 
-    # v9.3.0: Search spiral guard — prevent research agents from token waste
+    # v9.3.0: Search spiral guard — prevent research agents from token waste (STABLE — static boilerplate)
     enhanced_prompt="${enhanced_prompt}
 
 IMPORTANT: If you find yourself searching or grepping more than 3 times in a row without reading files or writing analysis, STOP searching. Consolidate what you've found so far and write your analysis. More searching rarely improves the output — synthesis does."
+
+    # ── VARIABLE SUFFIX ───────────────────────────────────────────────────────
+    # (probe dispatch has minimal variable content — context budget is the boundary)
 
     # v8.10.0: Enforce context budget AFTER all injections
     enhanced_prompt=$(enforce_context_budget "$enhanced_prompt" "$role")

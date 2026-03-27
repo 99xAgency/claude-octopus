@@ -2143,6 +2143,8 @@ embrace_full_workflow() {
     reset_provider_lockouts
 
     # v8.19.0: Inject high-importance observations into workflow context
+    # NOTE: Observations are VARIABLE content — appended after task prompt so that
+    # the stable persona/skill prefix (injected later by spawn_agent) stays cacheable
     local high_obs
     high_obs=$(search_observations "" 7 2>/dev/null) || true
     if [[ -n "$high_obs" ]]; then

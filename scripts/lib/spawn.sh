@@ -79,6 +79,26 @@ spawn_agent() {
         curated_name_early=$(select_curated_agent "$prompt" "$phase") || true
     fi
 
+    # ═══════════════════════════════════════════════════════════════════════════
+    # Cache-aligned prompt structure: stable prefix first, variable suffix last
+    # This enables Claude's cached-token discount on repeated prefix content
+    #
+    # STABLE PREFIX (identical across calls for same agent/role):
+    #   1. Persona pack override (if any)
+    #   2. Persona definition + task framing (apply_persona)
+    #   3. Agent skill context (deterministic per agent type)
+    #   4. Earned project skills (stable within a project session)
+    #   5. Search spiral guard (static text, researcher role only)
+    #
+    # VARIABLE SUFFIX (changes per call):
+    #   6. Checkpoint context (crash-recovery, ephemeral)
+    #   7. Memory context (session-specific warm start)
+    #   8. Provider history (per-provider learning, changes each run)
+    #   9. Heuristic context (past-run file patterns)
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    # ── STABLE PREFIX ─────────────────────────────────────────────────────────
+
     # Apply persona to prompt (v8.53.0: pass curated_name for readonly frontmatter check)
     local enhanced_prompt
     enhanced_prompt=$(apply_persona "$role" "$prompt" "false" "${curated_name_early:-}")
@@ -101,17 +121,7 @@ ${enhanced_prompt}"
         fi
     fi
 
-    # v8.19.0: Inject checkpoint context if available
-    if [[ -n "$checkpoint_ctx" ]]; then
-        enhanced_prompt="${enhanced_prompt}
-
----
-
-## Previous Attempt Context (crash-recovery)
-${checkpoint_ctx}"
-    fi
-
-    # v8.2.0: Load agent skill context if available
+    # v8.2.0: Load agent skill context if available (STABLE — deterministic per agent type)
     # NOTE: enforce_context_budget() moved AFTER all injections (v8.10.0 Issue #25)
     if [[ "$SUPPORTS_AGENT_TYPE_ROUTING" == "true" ]]; then
         local curated_agent=""
@@ -120,8 +130,7 @@ ${checkpoint_ctx}"
             local skill_context
             skill_context=$(build_skill_context "$curated_agent")
             if [[ -n "$skill_context" ]]; then
-                # v8.16: Append (not prepend) skill context for prompt cache optimization
-                # Stable persona prefix stays at top for better cache hits
+                # v9.15: Skill context in stable prefix for prompt cache alignment
                 enhanced_prompt="${enhanced_prompt}
 
 ---
@@ -132,6 +141,117 @@ ${skill_context}"
             fi
         fi
     fi
+
+    # v8.18.0: Inject earned skills context (STABLE — changes rarely within a project)
+    local earned_skills_ctx
+    earned_skills_ctx=$(load_earned_skills 2>/dev/null)
+    if [[ -n "$earned_skills_ctx" ]]; then
+        # Truncate to 1500 chars
+        if [[ ${#earned_skills_ctx} -gt 1500 ]]; then
+            earned_skills_ctx="${earned_skills_ctx:0:1500}..."
+        fi
+        # v8.41.0: Wrap file-sourced earned skills in anti-injection nonce
+        earned_skills_ctx=$(sanitize_external_content "$earned_skills_ctx" "earned-skills")
+        enhanced_prompt="${enhanced_prompt}
+
+---
+
+## Earned Project Skills
+${earned_skills_ctx}"
+        log "DEBUG" "Injected earned skills context (${#earned_skills_ctx} chars)"
+    fi
+
+    # v9.3.0: Search spiral guard for researcher role (STABLE — static boilerplate)
+    if [[ "$role" == "researcher" ]]; then
+        enhanced_prompt="${enhanced_prompt}
+
+IMPORTANT: If you find yourself searching or grepping more than 3 times in a row without reading files or writing analysis, STOP searching. Consolidate what you've found so far and write your analysis. More searching rarely improves the output — synthesis does."
+    fi
+
+    # ── VARIABLE SUFFIX ───────────────────────────────────────────────────────
+    # Everything below changes per invocation (timestamps, session state, etc.)
+
+    # v8.19.0: Inject checkpoint context if available (VARIABLE — ephemeral crash-recovery)
+    if [[ -n "$checkpoint_ctx" ]]; then
+        enhanced_prompt="${enhanced_prompt}
+
+---
+
+## Previous Attempt Context (crash-recovery)
+${checkpoint_ctx}"
+    fi
+
+    # v8.2.0: Log enhanced agent fields + v8.5: Inject memory context (VARIABLE)
+    if [[ "$SUPPORTS_AGENT_TYPE_ROUTING" == "true" ]]; then
+        local curated_name
+        curated_name=$(select_curated_agent "$prompt" "$phase") || true
+        if [[ -n "$curated_name" ]]; then
+            # v8.6.0: Export persona name for domain-specific gate scripts
+            export OCTOPUS_AGENT_PERSONA="${curated_name}"
+
+            local agent_mem agent_perm
+            agent_mem=$(get_agent_memory "$curated_name")
+            agent_perm=$(get_agent_permission_mode "$curated_name")
+            log "DEBUG" "Agent fields: memory=$agent_mem, permissionMode=$agent_perm"
+
+            # v8.5: Cross-memory warm start - inject memory context into prompt
+            # v8.26: Skip when native auto-memory handles project/user scope (v2.1.59+)
+            local _skip_mem=false
+            if [[ "$SUPPORTS_NATIVE_AUTO_MEMORY" == "true" && "$agent_mem" != "local" && "$agent_mem" != "none" ]]; then
+                _skip_mem=true
+                log "DEBUG" "Skipping Octopus memory injection for $curated_name (scope=$agent_mem, native auto-memory active)"
+            fi
+            if [[ "$_skip_mem" != "true" && -n "$agent_mem" && "$agent_mem" != "none" ]]; then
+                local memory_context
+                memory_context=$(build_memory_context "$agent_mem")
+                if [[ -n "$memory_context" ]]; then
+                    # v8.41.0: Wrap file-sourced memory in anti-injection nonce
+                    memory_context=$(sanitize_external_content "$memory_context" "memory")
+                    enhanced_prompt="${enhanced_prompt}
+
+---
+
+## Previous Context (from ${agent_mem} memory)
+${memory_context}"
+                    log "INFO" "Injected ${agent_mem} memory context (${#memory_context} chars) for agent: $curated_name"
+                fi
+            fi
+        fi
+    fi
+
+    # v8.18.0: Inject per-provider history context (VARIABLE — changes each run)
+    local provider_ctx
+    provider_ctx=$(build_provider_context "$agent_type")
+    if [[ -n "$provider_ctx" ]]; then
+        # v8.41.0: Wrap file-sourced provider history in anti-injection nonce
+        provider_ctx=$(sanitize_external_content "$provider_ctx" "provider-history")
+        enhanced_prompt="${enhanced_prompt}
+
+---
+
+${provider_ctx}"
+        log "DEBUG" "Injected provider history context (${#provider_ctx} chars) for $agent_type"
+    fi
+
+    # v9.3.0: Inject heuristic context from past successful runs (VARIABLE)
+    if [[ "${OCTOPUS_HEURISTIC_LEARNING:-on}" != "off" ]] && type build_heuristic_context &>/dev/null 2>&1; then
+        local heuristic_ctx
+        heuristic_ctx=$(build_heuristic_context "$enhanced_prompt" 2>/dev/null) || true
+        if [[ -n "$heuristic_ctx" ]]; then
+            heuristic_ctx=$(sanitize_external_content "$heuristic_ctx" "heuristics")
+            enhanced_prompt="${enhanced_prompt}
+
+---
+
+## File Heuristics
+${heuristic_ctx}"
+            log "DEBUG" "Injected heuristic context (${#heuristic_ctx} chars)"
+        fi
+    fi
+
+    # v8.10.0: Enforce context budget AFTER all injections (skill + memory)
+    # Previously called before injections, causing final prompt to exceed budget (Issue #25)
+    enhanced_prompt=$(enforce_context_budget "$enhanced_prompt" "${role:-}")
 
     # v8.4: Auto-route claude-opus to fast mode when appropriate
     # WARNING: Fast Opus is 6x more expensive ($30/$150 vs $5/$25 per MTok)
@@ -192,106 +312,6 @@ ${skill_context}"
     log INFO "Spawning $agent_type agent (task: $task_id, role: ${role:-none})"
     log DEBUG "Command: $cmd"
     log DEBUG "Phase: ${phase:-none}, Role: ${role:-none}"
-
-    # v8.2.0: Log enhanced agent fields + v8.5: Inject memory context
-    if [[ "$SUPPORTS_AGENT_TYPE_ROUTING" == "true" ]]; then
-        local curated_name
-        curated_name=$(select_curated_agent "$prompt" "$phase") || true
-        if [[ -n "$curated_name" ]]; then
-            # v8.6.0: Export persona name for domain-specific gate scripts
-            export OCTOPUS_AGENT_PERSONA="${curated_name}"
-
-            local agent_mem agent_perm
-            agent_mem=$(get_agent_memory "$curated_name")
-            agent_perm=$(get_agent_permission_mode "$curated_name")
-            log "DEBUG" "Agent fields: memory=$agent_mem, permissionMode=$agent_perm"
-
-            # v8.5: Cross-memory warm start - inject memory context into prompt
-            # v8.26: Skip when native auto-memory handles project/user scope (v2.1.59+)
-            local _skip_mem=false
-            if [[ "$SUPPORTS_NATIVE_AUTO_MEMORY" == "true" && "$agent_mem" != "local" && "$agent_mem" != "none" ]]; then
-                _skip_mem=true
-                log "DEBUG" "Skipping Octopus memory injection for $curated_name (scope=$agent_mem, native auto-memory active)"
-            fi
-            if [[ "$_skip_mem" != "true" && -n "$agent_mem" && "$agent_mem" != "none" ]]; then
-                local memory_context
-                memory_context=$(build_memory_context "$agent_mem")
-                if [[ -n "$memory_context" ]]; then
-                    # v8.41.0: Wrap file-sourced memory in anti-injection nonce
-                    memory_context=$(sanitize_external_content "$memory_context" "memory")
-                    # v8.16: Append (not prepend) memory context for prompt cache optimization
-                    # Stable persona prefix stays at top for better cache hits
-                    enhanced_prompt="${enhanced_prompt}
-
----
-
-## Previous Context (from ${agent_mem} memory)
-${memory_context}"
-                    log "INFO" "Injected ${agent_mem} memory context (${#memory_context} chars) for agent: $curated_name"
-                fi
-            fi
-        fi
-    fi
-
-    # v8.18.0: Inject per-provider history context
-    local provider_ctx
-    provider_ctx=$(build_provider_context "$agent_type")
-    if [[ -n "$provider_ctx" ]]; then
-        # v8.41.0: Wrap file-sourced provider history in anti-injection nonce
-        provider_ctx=$(sanitize_external_content "$provider_ctx" "provider-history")
-        enhanced_prompt="${enhanced_prompt}
-
----
-
-${provider_ctx}"
-        log "DEBUG" "Injected provider history context (${#provider_ctx} chars) for $agent_type"
-    fi
-
-    # v9.3.0: Inject heuristic context from past successful runs
-    if [[ "${OCTOPUS_HEURISTIC_LEARNING:-on}" != "off" ]] && type build_heuristic_context &>/dev/null 2>&1; then
-        local heuristic_ctx
-        heuristic_ctx=$(build_heuristic_context "$enhanced_prompt" 2>/dev/null) || true
-        if [[ -n "$heuristic_ctx" ]]; then
-            heuristic_ctx=$(sanitize_external_content "$heuristic_ctx" "heuristics")
-            enhanced_prompt="${enhanced_prompt}
-
----
-
-## File Heuristics
-${heuristic_ctx}"
-            log "DEBUG" "Injected heuristic context (${#heuristic_ctx} chars)"
-        fi
-    fi
-
-    # v8.18.0: Inject earned skills context
-    local earned_skills_ctx
-    earned_skills_ctx=$(load_earned_skills 2>/dev/null)
-    if [[ -n "$earned_skills_ctx" ]]; then
-        # Truncate to 1500 chars
-        if [[ ${#earned_skills_ctx} -gt 1500 ]]; then
-            earned_skills_ctx="${earned_skills_ctx:0:1500}..."
-        fi
-        # v8.41.0: Wrap file-sourced earned skills in anti-injection nonce
-        earned_skills_ctx=$(sanitize_external_content "$earned_skills_ctx" "earned-skills")
-        enhanced_prompt="${enhanced_prompt}
-
----
-
-## Earned Project Skills
-${earned_skills_ctx}"
-        log "DEBUG" "Injected earned skills context (${#earned_skills_ctx} chars)"
-    fi
-
-    # v9.3.0: Search spiral guard for researcher role
-    if [[ "$role" == "researcher" ]]; then
-        enhanced_prompt="${enhanced_prompt}
-
-IMPORTANT: If you find yourself searching or grepping more than 3 times in a row without reading files or writing analysis, STOP searching. Consolidate what you've found so far and write your analysis. More searching rarely improves the output — synthesis does."
-    fi
-
-    # v8.10.0: Enforce context budget AFTER all injections (skill + memory)
-    # Previously called before injections, causing final prompt to exceed budget (Issue #25)
-    enhanced_prompt=$(enforce_context_budget "$enhanced_prompt" "${role:-}")
 
     # Record usage (get model from agent type, with phase/role context)
     local model

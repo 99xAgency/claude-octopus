@@ -75,6 +75,13 @@ run_agent_sync() {
         role=$(get_role_for_context "$agent_type" "$task_type" "$phase")
     fi
 
+    # ═══════════════════════════════════════════════════════════════════════════
+    # Cache-aligned prompt structure: stable prefix first, variable suffix last
+    # This enables Claude's cached-token discount on repeated prefix content
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    # ── STABLE PREFIX ─────────────────────────────────────────────────────────
+
     # Apply persona to prompt (v8.53.0: empty agent_name — readonly not enforced in sync agents)
     local enhanced_prompt
     enhanced_prompt=$(apply_persona "$role" "$prompt" "false" "")
@@ -97,20 +104,7 @@ ${enhanced_prompt}"
         fi
     fi
 
-    # v8.18.0: Inject per-provider history context
-    local provider_ctx
-    provider_ctx=$(build_provider_context "$agent_type")
-    if [[ -n "$provider_ctx" ]]; then
-        # v8.41.0: Wrap file-sourced provider history in anti-injection nonce
-        provider_ctx=$(sanitize_external_content "$provider_ctx" "provider-history")
-        enhanced_prompt="${enhanced_prompt}
-
----
-
-${provider_ctx}"
-    fi
-
-    # v8.18.0: Inject earned skills context
+    # v8.18.0: Inject earned skills context (STABLE — changes rarely within a project)
     local earned_skills_ctx
     earned_skills_ctx=$(load_earned_skills 2>/dev/null)
     if [[ -n "$earned_skills_ctx" ]]; then
@@ -123,6 +117,21 @@ ${provider_ctx}"
 
 ## Earned Project Skills
 ${earned_skills_ctx}"
+    fi
+
+    # ── VARIABLE SUFFIX ───────────────────────────────────────────────────────
+
+    # v8.18.0: Inject per-provider history context (VARIABLE — changes each run)
+    local provider_ctx
+    provider_ctx=$(build_provider_context "$agent_type")
+    if [[ -n "$provider_ctx" ]]; then
+        # v8.41.0: Wrap file-sourced provider history in anti-injection nonce
+        provider_ctx=$(sanitize_external_content "$provider_ctx" "provider-history")
+        enhanced_prompt="${enhanced_prompt}
+
+---
+
+${provider_ctx}"
     fi
 
     log DEBUG "run_agent_sync: agent=$agent_type, role=${role:-none}, phase=${phase:-none}"

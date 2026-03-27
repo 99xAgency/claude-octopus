@@ -40,15 +40,54 @@ secure_tempfile() {
 }
 
 # Guard against oversized output that could flood Claude's context window
-# If content exceeds 49KB, writes to a temp file and returns a pointer instead
+# If content exceeds 49KB, writes to a temp file and returns a pointer instead.
+# When truncating, preserves anomalous lines (errors, failures, warnings) so
+# critical diagnostic info is never lost in the middle of truncated output.
 # Usage: guard_output "$content" "label"
 guard_output() {
     local content="$1" label="${2:-output}" max_bytes=49000
     if [[ ${#content} -gt $max_bytes ]]; then
         local f; f=$(secure_tempfile "guard-${label}")
         printf '%s\n' "$content" > "$f"
-        echo "[Output exceeded ${max_bytes} bytes. Full content at:]"
-        echo "@file:${f}"
+
+        # Anomaly-preserving truncation: scan for error/failure lines
+        local anomaly_pattern='ERROR|FATAL|FAIL|PANIC|Traceback|Exception|CRITICAL|error:|failed|Error:'
+        local anomaly_lines
+        anomaly_lines=$(printf '%s\n' "$content" | grep -n -E "$anomaly_pattern" 2>/dev/null) || true
+
+        if [[ -n "$anomaly_lines" ]]; then
+            # Count total lines
+            local total_lines
+            total_lines=$(printf '%s\n' "$content" | wc -l | tr -d ' ')
+            local omitted=$((total_lines - 30))
+            if [[ $omitted -lt 0 ]]; then
+                omitted=0
+            fi
+
+            # Head: first 20 lines
+            printf '%s\n' "$content" | head -20
+
+            echo ""
+            echo "--- [${omitted} lines omitted, showing anomalies below] ---"
+            echo ""
+
+            # Anomalous lines with their line numbers (already from grep -n)
+            printf '%s\n' "$anomaly_lines"
+
+            echo ""
+            echo "--- [end of anomalies] ---"
+            echo ""
+
+            # Tail: last 10 lines
+            printf '%s\n' "$content" | tail -10
+
+            echo ""
+            echo "Full output: @file:${f}"
+        else
+            # No anomalies found — fall back to head-truncation
+            echo "[Output exceeded ${max_bytes} bytes. Full content at:]"
+            echo "@file:${f}"
+        fi
     else
         printf '%s\n' "$content"
     fi

@@ -91,6 +91,13 @@ check_deps() {
         warnings+=("qwen:Qwen CLI not installed (optional) — npm install -g @qwen-code/qwen-code for free-tier research")
     fi
 
+    # RTK (optional — bash output compression)
+    if has_cmd rtk; then
+        ok+=("rtk:RTK installed (bash output compression active)")
+    else
+        warnings+=("rtk:RTK not installed (optional) — saves 60-90% tokens on bash output. Install: brew install rtk && rtk init -g")
+    fi
+
     # Statusline resolver
     local resolver="$HOME/.claude-octopus/statusline.sh"
     if [[ -f "$resolver" ]]; then

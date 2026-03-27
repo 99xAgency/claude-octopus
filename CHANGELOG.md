@@ -1,3 +1,18 @@
+## [9.15.0] - 2026-03-26
+
+### Added
+
+- **RTK companion detection** — `/octo:setup` and `/octo:doctor` now detect RTK (Rust Token Killer) and recommend it for 60-90% bash output compression. Context-awareness hook suggests RTK at WARNING level when not installed. Fully optional — no hard dependency.
+- **Cache-aligned prompt construction** — Restructured `spawn_agent()` and `run_agent_sync()` to place stable content (persona, skills, boilerplate) before variable content (timestamps, session state, provider history). Enables Claude's 90% cached-token discount on repeated prompt prefixes.
+- **Anomaly-preserving output truncation** — `guard_output()` now preserves error/failure lines (ERROR, FATAL, FAIL, PANIC, Traceback, Exception, CRITICAL) when truncating large outputs. Shows head + anomalous lines with line numbers + tail instead of blind truncation. Falls back to original behavior when no anomalies found.
+- 3 new test suites: `test-rtk-detection.sh` (17), `test-cache-alignment.sh` (29), `test-anomaly-truncation.sh` (20). 132/132 tests passing.
+
+### Fixed
+
+- **test-v8.5.0 Agent Teams grep window** — Widened `grep -A 400` to `-A 500` for spawn_agent function growth from cache-alignment restructuring.
+
+---
+
 ## [9.14.1] - 2026-03-26
 
 ### Added

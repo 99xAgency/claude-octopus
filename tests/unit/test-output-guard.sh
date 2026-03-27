@@ -41,7 +41,7 @@ fi
 
 # ── guard_output has @file: pointer pattern ─────────────────────────
 
-if grep -A15 'guard_output()' "$SECURE" | grep -q '@file:' 2>/dev/null; then
+if grep -A50 'guard_output()' "$SECURE" | grep -q '@file:' 2>/dev/null; then
     pass "guard_output emits @file: pointer for oversize content"
 else
     fail "guard_output emits @file: pointer for oversize content" "missing @file: pattern"

@@ -420,7 +420,7 @@ else
 fi
 
 # 5.7: Agent Teams path writes dispatch instruction file
-if grep -A 400 '^spawn_agent()' "$ALL_SRC" 2>/dev/null | grep -c 'AGENT_TEAMS_DISPATCH' >/dev/null 2>&1; then
+if grep -A 500 '^spawn_agent()' "$ALL_SRC" 2>/dev/null | grep -c 'AGENT_TEAMS_DISPATCH' >/dev/null 2>&1; then
     assert_pass "5.7 Agent Teams path writes dispatch instruction"
 else
     assert_fail "5.7 Agent Teams path writes dispatch instruction"

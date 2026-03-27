@@ -107,13 +107,19 @@ else
     ADVICE="Be concise in responses and avoid reading large files unnecessarily."
 fi
 
+# RTK tip: suggest token compression when context is tight and RTK is not installed
+RTK_TIP=""
+if [[ "$SEVERITY" == "WARNING" ]] && ! command -v rtk &>/dev/null; then
+    RTK_TIP=" Tip: install RTK (brew install rtk && rtk init -g) to save 60-90% tokens on bash output."
+fi
+
 case "$SEVERITY" in
     AUTO_COMPACT)
         MSG="🐙 AUTO-COMPACT IMMINENT: Context at ${USED_PCT}% (${REMAINING}% remaining). Auto-compaction will fire soon — complete your current thought. Do NOT start new large operations. ${ADVICE}" ;;
     CRITICAL)
         MSG="🐙 CRITICAL: Context at ${USED_PCT}% (${REMAINING}% remaining). ${ADVICE}" ;;
     WARNING)
-        MSG="🐙 WARNING: Context at ${USED_PCT}% (${REMAINING}% remaining). ${ADVICE}" ;;
+        MSG="🐙 WARNING: Context at ${USED_PCT}% (${REMAINING}% remaining). ${ADVICE}${RTK_TIP}" ;;
 esac
 
 # Return hook response with context warning
