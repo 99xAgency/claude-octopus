@@ -213,15 +213,6 @@
           "timeout": 5
         }
       ]
-    },
-    {
-      "hooks": [
-        {
-          "type": "command",
-          "command": "CLAUDE_HOOK_EVENT=SessionStart ${CLAUDE_PLUGIN_ROOT}/hooks/telemetry-posthog.sh",
-          "timeout": 3
-        }
-      ]
     }
   ],
   "TeammateIdle": [
@@ -330,15 +321,6 @@
           "timeout": 15
         }
       ]
-    },
-    {
-      "hooks": [
-        {
-          "type": "command",
-          "command": "CLAUDE_HOOK_EVENT=SessionEnd ${CLAUDE_PLUGIN_ROOT}/hooks/telemetry-posthog.sh",
-          "timeout": 5
-        }
-      ]
     }
   ],
   "UserPromptSubmit": [
@@ -385,15 +367,5 @@
       ]
     }
   ],
-  "Stop": [
-    {
-      "hooks": [
-        {
-          "type": "command",
-          "command": "CLAUDE_HOOK_EVENT=Stop ${CLAUDE_PLUGIN_ROOT}/hooks/telemetry-posthog.sh",
-          "timeout": 3
-        }
-      ]
-    }
-  ]
+  "Stop": []
 }

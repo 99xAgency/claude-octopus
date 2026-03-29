@@ -248,8 +248,6 @@ Everything except multi-AI features. You get all 32 personas, structured workflo
 
 **Data locations** — Results in `~/.claude-octopus/results/`, logs in `~/.claude-octopus/logs/`, project state in `.octo/`. Nothing hidden.
 
-**Telemetry** — Anonymous usage analytics help us improve the plugin. We collect session counts, workflow types used, and error rates — never prompts, file paths, or personal data. Disable anytime with `OCTOPUS_TELEMETRY_OPT_OUT=1`.
-
 **Provider transparency** — Every command shows a 🐙 activation indicator on launch. Colored dots (🔴 🟡 🟣 🔵) show exactly which providers are running and when external APIs are called. You always know what's happening.
 
 **Clean uninstall** — Run `claude plugin uninstall octo` from your terminal. If you see a scope error, add `--scope project`. No residual config changes.
