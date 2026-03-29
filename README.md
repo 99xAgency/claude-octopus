@@ -3,7 +3,7 @@
 Every AI model has blind spots. Claude Octopus puts up to eight of them on every task, so blind spots surface before you ship — not after. It orchestrates Codex, Gemini, Copilot, Qwen, Ollama, Perplexity, and OpenRouter alongside Claude Code, with consensus gates that flag any disagreements.
 
 <p align="center">
-  <img src="docs/assets/social-preview.jpg" alt="Claude Octopus" width="640">
+  <img src="docs/assets/demo.gif" alt="Claude Octopus Demo — debate and research with multiple AI providers" width="720">
 </p>
 
 <p align="center">
