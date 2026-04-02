@@ -1,3 +1,12 @@
+## [9.18.1] - 2026-04-02
+
+### Fixed
+
+- **Embrace workflow silent exit** — `cleanup_old_results()` and `cleanup_cache()` in `semantic-cache.sh` used bare `[[ cond ]] && cmd` patterns that returned exit code 1 under `set -e` when no files needed cleaning. Added `|| true` to prevent premature script termination. (#241)
+- **SESSION_FILE path expansion** — `SESSION_FILE` was derived from `WORKSPACE_DIR` at source-time in `quality.sh`, before `WORKSPACE_DIR` was defined in `orchestrate.sh`, causing it to expand to `/session.json`. Re-derived after `WORKSPACE_DIR` is set. (#241)
+
+---
+
 ## [9.18.0] - 2026-03-31
 
 ### Added
