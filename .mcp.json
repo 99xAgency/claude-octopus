@@ -1,11 +1,3 @@
 {
-  "mcpServers": {
-    "octo-claw": {
-      "command": "node",
-      "args": ["--require", "./mcp-server/check-node-version.js", "./mcp-server/dist/index.js"],
-      "env": {
-        "CLAUDE_OCTOPUS_MCP_MODE": "true"
-      }
-    }
-  }
+  "mcpServers": {}
 }

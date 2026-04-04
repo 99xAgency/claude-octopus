@@ -120,6 +120,7 @@ generate_mcp_config() {
       "command": "npx",
       "args": ["tsx", "$mcp_server_path"],
       "env": {
+        "OCTO_CLAW_ENABLED": "true",
         "OPENAI_API_KEY": "\${env:OPENAI_API_KEY}",
         "GEMINI_API_KEY": "\${env:GEMINI_API_KEY}",
         "GOOGLE_API_KEY": "\${env:GOOGLE_API_KEY}",
@@ -143,6 +144,7 @@ generate_zed_config() {
         "path": "npx",
         "args": ["tsx", "$mcp_server_path"],
         "env": {
+          "OCTO_CLAW_ENABLED": "true",
           "OPENAI_API_KEY": "\${env:OPENAI_API_KEY}",
           "GEMINI_API_KEY": "\${env:GEMINI_API_KEY}",
           "GOOGLE_API_KEY": "\${env:GOOGLE_API_KEY}",

@@ -426,6 +426,20 @@ server.tool(
 // --- Start Server ---
 
 async function main() {
+  // Opt-in guard: only start when explicitly enabled.
+  // Users who want the MCP server must set OCTO_CLAW_ENABLED=true in their
+  // environment or add the server manually to their .mcp.json / settings.json.
+  // This prevents a permanent "failed" status in `/mcp` for users who don't
+  // use OpenClaw or external MCP clients.
+  if (process.env.OCTO_CLAW_ENABLED !== "true") {
+    console.error(
+      "octo-claw MCP server is disabled by default. " +
+      "Set OCTO_CLAW_ENABLED=true to start it. " +
+      "See README.md § MCP Server for setup instructions."
+    );
+    process.exit(0);
+  }
+
   // SECURITY: stdio transport is scoped to the spawning process (local IDE only).
   // If switching to HTTP/SSE/WebSocket, add bearer token authentication.
   const transport = new StdioServerTransport();

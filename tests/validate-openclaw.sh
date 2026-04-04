@@ -129,16 +129,16 @@ MCP_JSON="$PLUGIN_ROOT/.mcp.json"
 if [[ -f "$MCP_JSON" ]]; then
     pass ".mcp.json exists at plugin root"
 
-    # Check server definition
+    # MCP server is opt-in: .mcp.json should have empty mcpServers
     if python3 -c "
 import json
 m = json.load(open('$MCP_JSON'))
 servers = m.get('mcpServers', {})
-exit(0 if 'octo-claw' in servers else 1)
+exit(0 if len(servers) == 0 else 1)
 " 2>/dev/null; then
-        pass "octo-claw MCP server is defined"
+        pass "mcpServers is empty (opt-in model)"
     else
-        fail "octo-claw MCP server not found in .mcp.json"
+        fail "mcpServers should be empty (server is opt-in since v0.x)"
     fi
 else
     fail ".mcp.json not found at plugin root"

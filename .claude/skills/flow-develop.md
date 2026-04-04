@@ -827,4 +827,21 @@ modified_files=$(git diff --name-only HEAD~1 2>/dev/null || echo "See git log")
 
 ---
 
+## Self-Regulation for Develop Iterative Loops
+
+When the develop phase involves iterative fix/build cycles, track a **WTF score** to detect runaway loops. Default weights (override via `~/.claude-octopus/loop-config.conf`):
+
+| Event | Score Impact |
+|-------|-------------|
+| Revert (undo a change) | **+15%** |
+| Touching files unrelated to the task | **+20%** |
+| Change requiring >3 files | **+5%** |
+| After the 15th iteration | **+1% per additional** |
+
+**If WTF score exceeds 20%** — STOP immediately, show the score breakdown, and ask the user whether to continue.
+
+**Hard cap:** 50 iterations regardless of score or progress. No exceptions.
+
+---
+
 **Ready to build!** This skill activates automatically when users request implementation or building features.

@@ -88,6 +88,7 @@ cd ~/.cursor/claude-octopus/mcp-server && npm install
       "command": "npx",
       "args": ["tsx", "${userHome}/.cursor/claude-octopus/mcp-server/src/index.ts"],
       "env": {
+        "OCTO_CLAW_ENABLED": "true",
         "OPENAI_API_KEY": "${env:OPENAI_API_KEY}",
         "GEMINI_API_KEY": "${env:GEMINI_API_KEY}"
       }
@@ -358,7 +359,26 @@ Three components, zero changes to the core plugin:
 
 ### MCP Server
 
-The MCP server auto-starts when the plugin is enabled (via `.mcp.json`). It exposes:
+The MCP server is **opt-in** — it does not start automatically. This prevents a permanent `✘ failed` status in Claude Code's `/mcp` panel for users who don't need it.
+
+To enable it, add the server to your project's `.mcp.json` or global Claude Code settings:
+
+```json
+{
+  "mcpServers": {
+    "octo-claw": {
+      "command": "node",
+      "args": ["--require", "./mcp-server/check-node-version.js", "./mcp-server/dist/index.js"],
+      "cwd": "<path-to-claude-octopus>",
+      "env": {
+        "OCTO_CLAW_ENABLED": "true"
+      }
+    }
+  }
+}
+```
+
+Once enabled, it exposes:
 
 - `octopus_discover`, `octopus_define`, `octopus_develop`, `octopus_deliver` — Individual phases
 - `octopus_embrace` — Full Double Diamond workflow

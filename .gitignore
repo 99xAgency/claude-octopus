@@ -8,6 +8,7 @@
 # Editor directories and files
 .idea/
 .vscode/
+.serena/
 *.swp
 *.swo
 *~

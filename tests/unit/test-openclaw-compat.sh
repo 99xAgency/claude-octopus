@@ -33,21 +33,26 @@ test_mcp_json_valid_json() {
     fi
 }
 
-test_mcp_server_entry_point() {
-    test_case ".mcp.json references correct server entry point"
-    if grep -q 'mcp-server/dist/index.js' "$PROJECT_ROOT/.mcp.json"; then
+test_mcp_server_opt_in() {
+    test_case ".mcp.json has empty mcpServers (opt-in model)"
+    if python3 -c "
+import json, sys
+m = json.load(open('$PROJECT_ROOT/.mcp.json'))
+servers = m.get('mcpServers', {})
+sys.exit(0 if len(servers) == 0 else 1)
+" 2>/dev/null; then
         test_pass
     else
-        test_fail ".mcp.json should reference mcp-server/dist/index.js"
+        test_fail ".mcp.json should have empty mcpServers (server is opt-in)"
     fi
 }
 
-test_mcp_env_variable() {
-    test_case ".mcp.json sets CLAUDE_OCTOPUS_MCP_MODE env var"
-    if grep -q 'CLAUDE_OCTOPUS_MCP_MODE' "$PROJECT_ROOT/.mcp.json"; then
+test_mcp_opt_in_guard() {
+    test_case "MCP server has OCTO_CLAW_ENABLED opt-in guard"
+    if grep -q 'OCTO_CLAW_ENABLED' "$PROJECT_ROOT/mcp-server/src/index.ts"; then
         test_pass
     else
-        test_fail ".mcp.json should set CLAUDE_OCTOPUS_MCP_MODE"
+        test_fail "mcp-server/src/index.ts should check OCTO_CLAW_ENABLED"
     fi
 }
 
@@ -460,8 +465,8 @@ test_validate_script_passes() {
 # MCP Server Configuration
 test_mcp_json_exists
 test_mcp_json_valid_json
-test_mcp_server_entry_point
-test_mcp_env_variable
+test_mcp_server_opt_in
+test_mcp_opt_in_guard
 
 # MCP Server Package
 test_mcp_package_json
