@@ -77,7 +77,7 @@ const C = {
 const ALL_COLUMNS = [
   "Octo", "5h Usage", "7d Usage", "Context", "Cost", "Cache", "Model",
   "Session", "Changes", "Tokens", "Output Tokens", "API Time", "Version",
-  "5h Reset", "7d Reset",
+  "5h Reset", "7d Reset", "RTK",
 ];
 
 // Default ON/OFF per column
@@ -86,7 +86,7 @@ const SECTION_DEFAULTS = {
   "5h Usage": true, "7d Usage": true, "Context": true, "Cost": true, "Model": true,
   "Cache": false, "Version": false,
   "Session": false, "Changes": false, "Tokens": false, "Output Tokens": false,
-  "API Time": false, "5h Reset": false, "7d Reset": false,
+  "API Time": false, "5h Reset": false, "7d Reset": false, "RTK": false,
 };
 
 // v9.10.2: Named presets for quick config switching
@@ -95,7 +95,7 @@ const PRESETS = {
   minimal: ["Octo", "Model", "Context"],
   developer: ["Octo", "Model", "5h Usage", "7d Usage", "Context", "Cost", "Changes"],
   full: ALL_COLUMNS,
-  performance: ["Octo", "Model", "Context", "Tokens", "Output Tokens", "Cache", "API Time", "Session"],
+  performance: ["Octo", "Model", "Context", "Tokens", "Output Tokens", "Cache", "API Time", "Session", "RTK"],
 };
 
 // Phase emoji mapping
@@ -180,6 +180,12 @@ function smartColumns(input, usage, base = null) {
   // Tokens — show when context pressure is building (>40%)
   if (contextPct > 40 && !has("Tokens")) {
     cols.push("Tokens");
+  }
+
+  // RTK — show when RTK has meaningful savings data
+  const rtkGain = getRtkGain();
+  if (rtkGain && rtkGain.totalSaved > 0 && !has("RTK")) {
+    cols.push("RTK");
   }
 
   // Context — always last (most visual, anchors the row)
@@ -660,6 +666,37 @@ function cacheHitRate(stdinData) {
   return Math.round((cacheRead / total) * 100);
 }
 
+// v9.19.0: RTK gain stats — cached for 120s to avoid repeated subprocess calls
+const RTK_GAIN_CACHE_TTL_MS = 120_000;
+let rtkGainCache = { data: null, ts: 0 };
+
+function getRtkGain() {
+  const now = Date.now();
+  if (rtkGainCache.data !== undefined && (now - rtkGainCache.ts) < RTK_GAIN_CACHE_TTL_MS) {
+    return rtkGainCache.data;
+  }
+  try {
+    const raw = execFileSync("rtk", ["gain", "--json"], {
+      timeout: 2000, encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"],
+    }).trim();
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      const summary = parsed.summary || parsed;
+      rtkGainCache = {
+        data: {
+          totalSaved: summary.total_saved ?? 0,
+          totalCommands: summary.total_commands ?? 0,
+          avgSavingsPct: summary.avg_savings_pct ?? 0,
+        },
+        ts: now,
+      };
+      return rtkGainCache.data;
+    }
+  } catch { /* rtk not installed or gain failed */ }
+  rtkGainCache = { data: null, ts: now };
+  return null;
+}
+
 function getContextPercent(stdin) {
   const pct = stdin.context_window?.used_percentage;
   if (typeof pct === "number" && !Number.isNaN(pct)) {
@@ -910,6 +947,14 @@ function render(input, session, usage, transcript, latestVersion, config) {
     "7d Reset": () => {
       const val = usage?.sevenDayResets ? formatResetTime(usage.sevenDayResets) : "";
       return { label: lbl("7d Reset"), value: val || `${C.slate600}N/A${C.reset}` };
+    },
+    "RTK": () => {
+      const gain = getRtkGain();
+      if (!gain) return { label: lbl("RTK"), value: `${C.slate600}N/A${C.reset}` };
+      const saved = formatTokens(gain.totalSaved);
+      const pct = gain.avgSavingsPct;
+      const color = pct >= 50 ? C.green : pct >= 20 ? C.yellow : C.slate600;
+      return { label: lbl("RTK"), value: `${color}${saved}${C.reset} ${C.slate600}(${Math.round(pct)}%)${C.reset}` };
     },
   };
 

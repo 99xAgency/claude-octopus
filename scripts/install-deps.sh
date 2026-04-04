@@ -93,9 +93,20 @@ check_deps() {
 
     # RTK (optional — bash output compression)
     if has_cmd rtk; then
-        ok+=("rtk:RTK installed (bash output compression active)")
+        local rtk_ver
+        rtk_ver=$(rtk --version 2>/dev/null | head -1) || rtk_ver="unknown"
+        local rtk_hook="no"
+        local settings_file="${HOME}/.claude/settings.json"
+        if [[ -f "$settings_file" ]] && grep -q 'rtk' "$settings_file" 2>/dev/null; then
+            rtk_hook="yes"
+        fi
+        if [[ "$rtk_hook" == "yes" ]]; then
+            ok+=("rtk:RTK ${rtk_ver} installed, hook active (bash output compression enabled)")
+        else
+            warnings+=("rtk:RTK ${rtk_ver} installed but Claude Code hook not configured. Run: rtk init -g")
+        fi
     else
-        warnings+=("rtk:RTK not installed (optional) — saves 60-90% tokens on bash output. Install: brew install rtk && rtk init -g")
+        warnings+=("rtk:RTK not installed (optional) — saves 60-90% tokens on bash output. Install: brew install rtk && rtk init -g. Run /octo:optimize for guided setup.")
     fi
 
     # Statusline resolver

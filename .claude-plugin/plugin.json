@@ -132,6 +132,7 @@
     "./.claude/commands/costs.md",
     "./.claude/commands/retro.md",
     "./.claude/commands/history.md",
-    "./.claude/commands/discipline.md"
+    "./.claude/commands/discipline.md",
+    "./.claude/commands/optimize.md"
   ]
 }

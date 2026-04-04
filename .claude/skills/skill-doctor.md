@@ -116,7 +116,7 @@ cd "${CLAUDE_PLUGIN_ROOT}" && bash scripts/orchestrate.sh doctor auth --verbose
 | `conflicts` | Conflicting plugins detection |
 | `agents` | Agent definitions, worktree isolation, CLI registration, version compatibility |
 | `recurrence` | Failure pattern detection — flags repeated quality gate failures, source hotspots, 48h trends |
-| `deps` | Software dependencies — Node.js, jq, Codex/Gemini CLIs, RTK token compression, statusline resolver, recommended plugins |
+| `deps` | Software dependencies — Node.js, jq, Codex/Gemini CLIs, RTK token compression (gain stats + hook status), statusline resolver, recommended plugins |
 
 ---
 
@@ -137,7 +137,9 @@ All checks pass — no action needed.
 | Circuit breaker OPEN | Provider had 3+ consecutive transient failures — wait for cooldown or check provider status |
 | Stale state | Delete `.octo/state.json` and re-initialize |
 | Invalid hooks.json | Check `hooks.json` syntax — must be valid JSON |
-| RTK not installed | `brew install rtk && rtk init -g` (optional — saves 60-90% tokens on bash output) |
+| RTK not installed | `brew install rtk && rtk init -g` (optional — saves 60-90% tokens on bash output). Run `/octo:optimize` for setup guide. |
+| RTK installed but hook not configured | Run `rtk init -g` to install the Claude Code bash hook for automatic output compression |
+| RTK gain stats unavailable | Run some bash commands first, then check `rtk gain` to see token savings |
 | Conflicting plugins | Uninstall conflicting plugins or adjust scope |
 
 ---
