@@ -126,7 +126,7 @@ if command -v rtk &>/dev/null; then
 else
     # RTK not installed — suggest at WARNING, CRITICAL, and AUTO_COMPACT
     if [[ "$SEVERITY" == "WARNING" || "$SEVERITY" == "CRITICAL" || "$SEVERITY" == "AUTO_COMPACT" ]]; then
-        RTK_TIP=" Tip: install RTK (brew install rtk && rtk init -g) to save 60-90% tokens on bash output. Run /octo:optimize for setup guide."
+        RTK_TIP=" Tip: brew install rtk && rtk init -g (60-90% token savings). /octo:doctor to install."
     fi
 fi
 

@@ -99,6 +99,63 @@ cd "${CLAUDE_PLUGIN_ROOT}" && bash scripts/orchestrate.sh doctor --json
 cd "${CLAUDE_PLUGIN_ROOT}" && bash scripts/orchestrate.sh doctor auth --verbose
 ```
 
+### Step 5: Interactive Remediation (MANDATORY for fixable issues)
+
+After running diagnostics, if ANY fixable issues are found, you MUST use AskUserQuestion to offer fixes. Do NOT just print instructions — offer to execute them.
+
+**RTK not installed:**
+```javascript
+AskUserQuestion({
+  questions: [{
+    question: "RTK saves 60-90% on bash output tokens. Install it now?",
+    header: "Install RTK",
+    multiSelect: false,
+    options: [
+      {label: "Install via brew (Recommended)", description: "brew install rtk — fast, macOS"},
+      {label: "Install via cargo", description: "cargo install --git https://github.com/rtk-ai/rtk"},
+      {label: "Skip", description: "Continue without RTK"}
+    ]
+  }]
+})
+```
+If user chooses install, run it, then offer hook setup.
+
+**RTK installed but hook not configured:**
+```javascript
+AskUserQuestion({
+  questions: [{
+    question: "RTK is installed but the Claude Code hook isn't active. Configure it?",
+    header: "RTK Hook",
+    multiSelect: false,
+    options: [
+      {label: "Run rtk init -g (Recommended)", description: "Auto-installs Claude Code bash hook"},
+      {label: "Skip", description: "I'll configure it later"}
+    ]
+  }]
+})
+```
+
+**Missing providers (Codex/Gemini not installed):**
+```javascript
+AskUserQuestion({
+  questions: [{
+    question: "Some providers are missing. Install them?",
+    header: "Providers",
+    multiSelect: true,
+    options: [
+      {label: "Codex CLI", description: "npm install -g @openai/codex"},
+      {label: "Gemini CLI", description: "brew install gemini-cli (macOS)"},
+      {label: "Skip all", description: "Continue with available providers"}
+    ]
+  }]
+})
+```
+
+**Auth expired:**
+Offer to run the login command for the expired provider.
+
+**Multiple fixable issues:** Batch them into a single AskUserQuestion with multiSelect where appropriate, rather than asking one at a time.
+
 ---
 
 ## Check Categories
@@ -137,8 +194,8 @@ All checks pass — no action needed.
 | Circuit breaker OPEN | Provider had 3+ consecutive transient failures — wait for cooldown or check provider status |
 | Stale state | Delete `.octo/state.json` and re-initialize |
 | Invalid hooks.json | Check `hooks.json` syntax — must be valid JSON |
-| RTK not installed | Run `/octo:optimize` to install interactively (saves 60-90% tokens on bash output) |
-| RTK installed but hook not configured | Run `/octo:optimize` to configure the Claude Code bash hook |
+| RTK not installed | Offer to install: `brew install rtk && rtk init -g` (saves 60-90% tokens). Use AskUserQuestion to offer brew vs cargo install. |
+| RTK installed but hook not configured | Offer to configure: use AskUserQuestion to offer `rtk init -g` for automatic bash output compression |
 | RTK gain stats unavailable | Run some bash commands first, then check `rtk gain` to see token savings |
 | Conflicting plugins | Uninstall conflicting plugins or adjust scope |
 

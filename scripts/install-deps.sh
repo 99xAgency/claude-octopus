@@ -106,7 +106,7 @@ check_deps() {
             warnings+=("rtk:RTK ${rtk_ver} installed but Claude Code hook not configured. Run: rtk init -g")
         fi
     else
-        warnings+=("rtk:RTK not installed (optional) — saves 60-90% tokens on bash output. Install: brew install rtk && rtk init -g. Run /octo:optimize for guided setup.")
+        warnings+=("rtk:RTK not installed (optional) — saves 60-90% tokens on bash output. Install: brew install rtk && rtk init -g. Run /octo:doctor for guided setup.")
     fi
 
     # Statusline resolver

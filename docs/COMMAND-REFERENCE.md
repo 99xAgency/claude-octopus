@@ -1,6 +1,6 @@
 # Command and Usage Reference
 
-Complete reference for all 49 Claude Octopus slash commands, 10 CLI tools (`octopus` + `octo-compress`), plus activation rules, provider indicators, and the project-lifecycle features that are triggered by natural language rather than slash commands.
+Complete reference for all 48 Claude Octopus slash commands, 10 CLI tools (`octopus` + `octo-compress`), plus activation rules, provider indicators, and the project-lifecycle features that are triggered by natural language rather than slash commands.
 
 ---
 
@@ -19,9 +19,8 @@ All slash commands use the `/octo:` namespace. The smart router command is `/oct
 | Command | Description |
 |---------|-------------|
 | `/octo:setup` | Check setup status and configure providers (alias: `/octo:sys-setup`) |
-| `/octo:doctor` | Environment diagnostics across 9 check categories |
+| `/octo:doctor` | Environment diagnostics across 9 check categories (includes RTK install + token optimization) |
 | `/octo:model-config` | Configure provider model selection per workflow phase |
-| `/octo:optimize` | Analyze token usage, RTK integration, and context optimization |
 | `/octo:km` | Toggle Knowledge Work mode |
 | `/octo:dev` | Switch to Dev Work mode |
 
