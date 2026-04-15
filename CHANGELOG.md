@@ -1,3 +1,12 @@
+## [9.22.1] - 2026-04-15
+
+### Fixed
+
+- Removed `set -euo pipefail` leak from sourced `lib/memory.sh` that cascaded failures across all orchestrator commands (#270, closes #269)
+- Added missing `PROGRESS_FILE` variable definition in `orchestrate.sh`, fixing crashes in `discover` and `embrace` for users with jq installed (#271)
+- Rewrote `score_result_file` counting in `lib/heuristics.sh` with `safe_count()` helper to handle `grep -c` exit-1-on-no-match correctly, fixing arithmetic syntax errors that caused silent hangs during probe synthesis (#275)
+
+
 ## [9.22.0] - 2026-04-15
 
 ### Added
