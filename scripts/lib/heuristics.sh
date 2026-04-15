@@ -16,6 +16,20 @@
 #   - Code block count (max 20 pts): concrete examples signal actionable content
 #   - Specificity (max 20 pts): named files/functions/URLs vs vague prose
 #   - Structure (max 20 pts): headers, lists, tables signal organized thinking
+# `grep -c` prints 0 AND exits 1 on no-match; naive `$(grep -c ... || echo 0)` concatenates a 2nd zero and breaks arithmetic.
+safe_count() {
+    local pattern="$1"
+    local content="$2"
+    local extra="${3:-}"
+    local n
+    if [[ "$extra" == "-E" ]]; then
+        n=$(grep -cE -- "$pattern" <<<"$content" 2>/dev/null) || n=0
+    else
+        n=$(grep -c -- "$pattern" <<<"$content" 2>/dev/null) || n=0
+    fi
+    printf '%s' "${n:-0}"
+}
+
 score_result_file() {
     local file="$1"
     [[ ! -f "$file" ]] && echo "0" && return
@@ -38,28 +52,22 @@ score_result_file() {
         score=$((score + 40))
     fi
 
-    # Factor 2: Code blocks (0-20 pts, 5 pts each up to 4)
-    local code_blocks
-    code_blocks=$(grep -c '```' <<< "$content" 2>/dev/null || echo "0")
-    # Each pair of ``` = 1 code block, so divide by 2
-    local block_count=$(( code_blocks / 2 ))
+    local code_blocks block_count
+    code_blocks=$(safe_count '```' "$content")
+    block_count=$(( code_blocks / 2 ))
     [[ $block_count -gt 4 ]] && block_count=4
     score=$((score + block_count * 5))
 
-    # Factor 3: Specificity (0-20 pts) — file paths, function names, URLs
-    local specifics=0
-    grep -cE '\.(ts|js|py|sh|rs|go|md|json)[ :\)]|/[a-z]+/' <<< "$content" &>/dev/null && specifics=$((specifics + $(grep -cE '\.(ts|js|py|sh|rs|go|md|json)[ :\)]|/[a-z]+/' <<< "$content" 2>/dev/null || echo "0")))
+    local specifics
+    specifics=$(safe_count '\.(ts|js|py|sh|rs|go|md|json)[ :\)]|/[a-z]+/' "$content" -E)
     [[ $specifics -gt 20 ]] && specifics=20
     score=$((score + specifics))
 
-    # Factor 4: Structure (0-20 pts) — markdown headers, bullet lists, tables
-    local structure=0
-    local headers
-    headers=$(grep -c '^#' <<< "$content" 2>/dev/null || echo "0")
+    local structure=0 headers bullets
+    headers=$(safe_count '^#' "$content")
     [[ $headers -gt 5 ]] && headers=5
     structure=$((structure + headers * 2))
-    local bullets
-    bullets=$(grep -c '^[[:space:]]*[-*]' <<< "$content" 2>/dev/null || echo "0")
+    bullets=$(safe_count '^[[:space:]]*[-*]' "$content")
     [[ $bullets -gt 5 ]] && bullets=5
     structure=$((structure + bullets * 2))
     [[ $structure -gt 20 ]] && structure=20
