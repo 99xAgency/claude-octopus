@@ -230,6 +230,25 @@ review_run() {
 
     log INFO "review_run: target=$target focus=$focus provenance=$provenance autonomy=$autonomy"
 
+    # ── PR-aware iteration state (round-aware reviews) ──────────────────────
+    # If this is a PR target (or a PR is open on the current branch), check
+    # whether prior reviews exist. If yes, build a "prior context" string
+    # that gets prepended to the agent prompt — turning round N+1 from a
+    # fresh read into a structured re-review against the prior findings.
+    local pr_for_state=""
+    if [[ "$target" =~ ^[0-9]+$ ]]; then
+        pr_for_state="$target"
+    else
+        pr_for_state=$(gh pr view --json number -q .number 2>/dev/null || true)
+    fi
+    local prior_context_string=""
+    if [[ -n "$pr_for_state" ]] && command -v pr_review_state_load >/dev/null 2>&1; then
+        prior_context_string=$(pr_review_state_load "$pr_for_state" 2>/dev/null || true)
+        if [[ -n "$prior_context_string" ]]; then
+            log INFO "review_run: prior review state loaded for PR #$pr_for_state — injecting into dispatch prompt"
+        fi
+    fi
+
     # ── REVIEW.md ────────────────────────────────────────────────────────────
     parse_review_md
     local review_context=""
@@ -295,6 +314,8 @@ Focus areas for this review: ${focus}
 Provenance: ${provenance}
 $(if [[ "$provenance" == "autonomous" || "$provenance" == "ai-assisted" ]]; then echo "ELEVATED RIGOR: Check for TDD evidence, placeholder logic, unwired components, speculative abstractions."; fi)
 $(if [[ "$autonomy" == "autonomous" ]]; then echo "AUTONOMOUS MODE: Apply maximum rigor. Flag every potential issue with full detail."; fi)
+
+${prior_context_string}
 
 Diff to review:
 \`\`\`
@@ -488,6 +509,14 @@ Return ONLY JSON: {\"findings\": [...ranked, deduplicated findings...]}"
     # ── Output ────────────────────────────────────────────────────────────────
     local pr_number=""
     pr_number=$(gh pr view --json number -q .number 2>/dev/null || true)
+
+    # Persist round-aware state — only when we have a PR. Future invocations
+    # of /octo:review on this PR will load it via pr_review_state_load and
+    # inject it into the dispatch prompt.
+    if [[ -n "$pr_number" ]] && command -v pr_review_state_save >/dev/null 2>&1; then
+        pr_review_state_save "$pr_number" "$findings_file" 2>/dev/null || \
+            log WARN "review_run: pr_review_state_save failed for PR #$pr_number (non-fatal)"
+    fi
 
     if [[ -n "$pr_number" && "$publish" != "never" ]]; then
         local avg_confidence
