@@ -132,7 +132,8 @@ AskUserQuestion({
     header: "Codex Model",
     multiSelect: false,
     options: [
-      {label: "gpt-5.4", description: "Flagship — 400K context, $2.50/$15 MTok, best for complex tasks"},
+      {label: "gpt-5.5 (Recommended)", description: "Latest flagship — best for complex implementation. Currently shipped in Codex CLI v0.125+"},
+      {label: "gpt-5.4", description: "Prior flagship — 400K context, $2.50/$15 MTok, still solid"},
       {label: "gpt-5.4 (fast/spark)", description: "1000+ tok/s — 128K context, Pro-only, best for reviews & iteration"},
       {label: "gpt-5.4-mini", description: "Budget — 400K context, $0.25/$2 MTok, great for simple tasks"},
       {label: "o3", description: "Reasoning — 200K context, $2/$8 MTok, deep analysis & trade-offs"},
