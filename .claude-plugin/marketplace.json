@@ -1,24 +1,24 @@
 {
-  "name": "nyldn-plugins",
+  "name": "99xagency-plugins",
   "owner": {
-    "name": "nyldn"
+    "name": "99xAgency"
   },
   "metadata": {
-    "description": "Multi-tentacled orchestration plugin for Claude Code",
-    "version": "9.29.2"
+    "description": "Round-aware fork of claude-octopus by 99xAgency",
+    "version": "9.29.2-rounds.1"
   },
   "plugins": [
     {
-      "name": "octo",
+      "name": "octo-rounds",
       "source": "./",
-      "description": "v9.29.2 - Multi-LLM orchestration for Claude Code. Route tasks to Codex, Gemini, Perplexity, Copilot, Qwen, Ollama, OpenCode. 137 CC feature flags, token compression (~7K/session saved), interactive setup wizard. 32 personas, 48 commands, 52 skills. Run /octo:setup.",
-      "version": "9.29.2",
+      "description": "Round-aware fork of nyldn/claude-octopus v9.29.2. Adds per-PR review iteration state — second `/octo:review` on the same PR sees prior findings + git diff since last review and classifies each prior finding as addressed/persistent/regressed. Everything else upstream-identical. See feat/round-aware-reviews branch + upstream issue #322 for context.",
+      "version": "9.29.2-rounds.1",
       "author": {
-        "name": "nyldn",
-        "url": "https://github.com/nyldn"
+        "name": "99xAgency (round-aware fork)",
+        "url": "https://github.com/99xAgency"
       },
-      "repository": "https://github.com/nyldn/claude-octopus",
-      "homepage": "https://github.com/nyldn/claude-octopus",
+      "repository": "https://github.com/99xAgency/claude-octopus",
+      "homepage": "https://github.com/99xAgency/claude-octopus",
       "license": "MIT",
       "keywords": [
         "multi-llm",
