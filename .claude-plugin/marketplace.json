@@ -9,9 +9,9 @@
   },
   "plugins": [
     {
-      "name": "octo-rounds",
+      "name": "octr",
       "source": "./",
-      "description": "Round-aware fork of nyldn/claude-octopus v9.29.2. Adds per-PR review iteration state — second `/octo:review` on the same PR sees prior findings + git diff since last review and classifies each prior finding as addressed/persistent/regressed. Everything else upstream-identical. See feat/round-aware-reviews branch + upstream issue #322 for context.",
+      "description": "Round-aware fork of nyldn/claude-octopus v9.29.2. Adds per-PR review iteration state — second /octr:review on the same PR sees prior findings + git diff since last review and classifies each prior finding as addressed/persistent/regressed. Everything else upstream-identical. See feat/round-aware-reviews branch + upstream issue #322 for context.",
       "version": "9.29.2-rounds.1",
       "author": {
         "name": "99xAgency (round-aware fork)",

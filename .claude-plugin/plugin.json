@@ -1,14 +1,14 @@
 {
-  "name": "octo",
-  "version": "9.29.2",
-  "description": "v9.29.2 \u2014 Model defaults refreshed: Opus 4.7 for planning/strategy/security-review, GPT-5.4 for code-review/implementation. New GPT-5.4 prompting guide. Set OCTOPUS_LEGACY_ROLES=1 to opt out. Run /octo:setup.",
+  "name": "octr",
+  "version": "9.29.2-rounds.1",
+  "description": "Round-aware fork of nyldn/claude-octopus v9.29.2. Adds per-PR review iteration state \u2014 second /octr:review on the same PR sees prior findings + git diff since last review and classifies each prior finding as addressed/persistent/regressed. Run /octr:setup. See upstream issue nyldn/claude-octopus#322 for context.",
   "author": {
-    "name": "nyldn",
-    "url": "https://github.com/nyldn"
+    "name": "99xAgency (round-aware fork)",
+    "url": "https://github.com/99xAgency"
   },
   "license": "MIT",
-  "repository": "https://github.com/nyldn/claude-octopus",
-  "homepage": "https://github.com/nyldn/claude-octopus",
+  "repository": "https://github.com/99xAgency/claude-octopus",
+  "homepage": "https://github.com/99xAgency/claude-octopus",
   "keywords": [
     "multi-llm",
     "multi-agent",
